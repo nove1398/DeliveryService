@@ -4,8 +4,11 @@ using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace DeliveryService.Models
+namespace DeliveryService.Shared.Models
 {
+    /**
+     * Food / Courier
+     * */
     public class ServiceType
     {
         [Key]
@@ -15,6 +18,6 @@ namespace DeliveryService.Models
 
         public string Description { get; set; }
 
-        public ICollection<Store> Stores { get; set; }
+        public virtual ICollection<Store> Stores { get; set; }
     }
 }

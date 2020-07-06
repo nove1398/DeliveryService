@@ -1,11 +1,7 @@
-﻿using DeliveryService.Shared.Models;
-using System;
+﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Numerics;
-using System.Threading.Tasks;
 
-namespace DeliveryService.Models
+namespace DeliveryService.Shared.Models
 {
     public class Order
     {
@@ -32,11 +28,9 @@ namespace DeliveryService.Models
 
         public bool IsAssigned { get; set; }
 
-        public long AddressId { get; set; }
-        public virtual Address Address { get; set; }
+        public string DeliveryAddress { get; set; }
 
-        public virtual ICollection<Comment> Comments { get; set; }
-        public virtual ICollection<MenuItem> MenuItems { get; set; }
         public virtual ICollection<AppUserOrder> AppUserOrders { get; set; }
+        public virtual ICollection<OrderMenuItem> OrderMenuItems { get; set; }
     }
 }

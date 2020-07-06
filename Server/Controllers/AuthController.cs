@@ -1,42 +1,60 @@
-﻿using System.Threading.Tasks;
-using DeliveryService.Models;
+﻿using System;
+using System.Threading.Tasks;
+using DeliveryService.Server.Data;
+using DeliveryService.Server.Helpers;
 using DeliveryService.Server.Services;
+using DeliveryService.Shared.API;
+using DeliveryService.Shared.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
-using PingMe.Data;
 using PingMe.Models;
-using PingMe.Services;
 
 namespace DeliveryService.Server.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
+    [Produces("application/json")]
     public class AuthController : ControllerBase
     {
-        private readonly IConfiguration _config;
-        private readonly PingMeContext _context;
         private readonly ITokenService _tokenService;
+        private readonly IUserService _userService;
+        private readonly PasswordHasher _passwordHash;
 
-        public AuthController(IConfiguration config, PingMeContext context,ITokenService tokenService)
+        public AuthController(ITokenService tokenService,IUserService userService)
         {
-            _config = config;
-            _context = context;
             _tokenService = tokenService;
+            _userService = userService;
+            _passwordHash = new PasswordHasher();
         }
 
         [HttpPost("login")]
-        public async Task<IActionResult> ValidateUser([FromBody]LoginModel login)
+        public async Task<IActionResult> ValidateUser([FromBody]AuthRequest login)
         {
 
+            var user = new AppUser();// await _userService.GetUser(login.Email);
+            if(user == null)
+            {
+                return NotFound();
+            }
+
+            if(!_passwordHash.VerifyPassword(_passwordHash.HashPassword(login.Password).HashedPass, user.HashedPassword, user.Salt))
+            {
+                return Ok(new AuthResponse { Error = "Invalid details entered", Successfull = false, Token = string.Empty});
+            }
+
             //Login here
-            var user = new AppUser();
             return Ok(new AuthResponse { Token = _tokenService.GenerateToken(user), Error = string.Empty, Successfull = true }); ;
         }
 
         [HttpPost("register")]
-        public async Task<IActionResult> RegisterUser()
+        public async Task<IActionResult> RegisterUser([FromBody]RegisterRequest request)
         {
-            return Ok(new AuthResponse { Successfull = true, Error = string.Empty});
+
+            var newUser = new AppUser();
+            newUser.FirstName = request.FirstName;
+
+
+            return Ok(new ResponseModel<AppUser> { IsSuccess = true, Data = newUser, Message = $"Registered new account for {newUser.FirstName}"});
         }
     }
 }

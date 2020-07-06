@@ -5,7 +5,7 @@ using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace DeliveryService.Models
+namespace DeliveryService.Shared.Models
 {
     public class AppUser
     {
@@ -26,9 +26,7 @@ namespace DeliveryService.Models
 
         public string BetaCode { get; set; }
 
-        public string ResetCode { get; set; }
-
-        public string Avatar { get; set; }
+        public string Photo { get; set; }
 
         public string Nickname { get; set; }
 
@@ -42,11 +40,12 @@ namespace DeliveryService.Models
 
         public DateTime? UpdatedAt { get; set; }
 
-        public long? AddressId { get; set; }
-        public virtual Address Address { get; set; }
+        public int? RiderId { get; set; }
+        public virtual Rider Rider { get; set; }
 
         public virtual ICollection<Order> Orders { get; set; }
-        public virtual ICollection<Comment> Comments { get; set; }
+        public virtual ICollection<Address> Addresses { get; set; }
+        public virtual ICollection<Review> Comments { get; set; }
         public virtual ICollection<AppUserRoles> AppUserRoles { get; set; }
         public virtual ICollection<AppUserOrder> AppUserOrders { get; set; }
         public virtual ICollection<AppUserFavourite> AppUserFavourites { get; set; }

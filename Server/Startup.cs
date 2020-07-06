@@ -1,18 +1,14 @@
 using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.ResponseCompression;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using System.Linq;
-using PingMe.Data;
-using PingMe.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using Microsoft.EntityFrameworkCore;
 using DeliveryService.Server.Services;
+using DeliveryService.Server.Data;
 
 namespace DeliveryService.Server
 {
@@ -56,9 +52,10 @@ namespace DeliveryService.Server
              });
             services.AddAuthorizationCore();
 
-            services.AddDbContext<PingMeContext>(options => options.UseSqlServer(Configuration.GetConnectionString("DevConnection")));
+            services.AddDbContext<DeliveryContext>(options => options.UseSqlServer(Configuration.GetConnectionString("DevConnection")));
 
             services.AddTransient<ITokenService, TokenService>();
+            services.AddTransient<IUserService, UserService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

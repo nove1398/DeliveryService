@@ -1,24 +1,33 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Threading.Tasks;
 
-namespace DeliveryService.Models
+namespace DeliveryService.Shared.Models
 {
     public class Store
     {
         [Key]
-        public long BusinessEntityId { get; set; }
+        public long StoreId { get; set; }
 
-        public string BusinessName { get; set; }
+        public string Name { get; set; }
 
-        public string AddressId { get; set; }
+        public int Contact { get; set; }
+
+        public decimal Commission { get; set; }
+
+        public decimal DeliveryFee { get; set; }
+
+        public DateTime CreatedAt { get; set; }
+
+        public DateTime? UpdatedAt { get; set; }
+
+        public long? AddressId { get; set; }
         public Address Address { get; set; }
 
-        public int ServiceTypeId { get; set; }
         public ServiceType ServiceType { get; set; }
+        public int? ServiceTypeId { get; set; }
 
-
+        public virtual ICollection<MenuItem> MenuItems { get; set; }
+        public virtual ICollection<StoreCategory> StoreCategories { get; set; }
     }
 }

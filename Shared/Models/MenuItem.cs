@@ -1,15 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Threading.Tasks;
 
-namespace DeliveryService.Models
+namespace DeliveryService.Shared.Models
 {
     public class MenuItem
     {
         [Key]
         public int MenuItemId { get; set; }
+
+        public DateTime CreatedAt { get; set; }
 
         public string Name { get; set; }
 
@@ -21,7 +21,15 @@ namespace DeliveryService.Models
 
         public bool IsActive { get; set; }
 
-        public int OrderId { get; set; }
-        public Order Order { get; set; }
+        public decimal Tax { get; set; }
+
+        public string Image { get; set; }
+
+        public int? StoreId { get; set; }
+        public Store Store { get; set; }
+
+        public virtual ICollection<CartMenuItem> CartMenuItems { get; set; }
+        public virtual ICollection<OrderMenuItem> OrderMenuItems { get; set; }
+        public virtual ICollection<CategoryMenuItem> CategoryMenuItems { get; set; }
     }
 }

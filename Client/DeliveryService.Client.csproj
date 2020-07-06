@@ -16,8 +16,4 @@
     <ProjectReference Include="..\Shared\DeliveryService.Shared.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Components\" />
-  </ItemGroup>
-
 </Project>

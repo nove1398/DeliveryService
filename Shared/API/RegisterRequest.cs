@@ -1,11 +1,12 @@
-﻿using System;
+﻿using DeliveryService.Shared.Models;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
 namespace PingMe.Models
 {
-    public class RegisterModel
+    public class RegisterRequest
     {
         public string Username { get; set; }
 
@@ -17,8 +18,10 @@ namespace PingMe.Models
 
         public string LastName { get; set; }
 
-        public DateTime CreatedAt { get; set; }
+        public DateTime CreatedAt { get; set; } = DateTime.Now;
 
-        public DateTime? UpdatedAt { get; set; }
+        public Address Address { get; set; }
+
+        public AppRoles Roles { get; set; }
     }
 }

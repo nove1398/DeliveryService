@@ -4,7 +4,7 @@ using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace DeliveryService.Models
+namespace DeliveryService.Shared.Models
 {
     public class Address
     {
@@ -15,18 +15,15 @@ namespace DeliveryService.Models
 
         public string AddressLine2 { get; set; }
 
-        public string Street { get; set; }
+        public string Country { get; set; } = "Jamaica";
 
-        public string Country { get; set; }
+        public string Parish { get; set; }
 
-        public string PostalCode { get; set; }
+        public int ZipCode { get; set; } = 876; 
 
-        public string Province { get; set; }
+        public long? AppUserId { get; set; }
+        public AppUser AppUser { get; set; }
 
-        public string ZipCode { get; set; }
-
-
-        public ICollection<Store> Stores { get; set; }
-        public ICollection<Order> Orders { get; set; }
+        public virtual ICollection<Store> Stores { get; set; }
     }
 }
