@@ -9,7 +9,7 @@ namespace DeliveryService.Shared.Models
     {
 
         public Category Category { get; set; }
-        public int CategoryId { get; set; }
+        public long CategoryId { get; set; }
 
         public MenuItem MenuItem { get; set; }
         public int MenuItemId { get; set; }

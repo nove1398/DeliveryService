@@ -1,4 +1,6 @@
 ﻿using DeliveryService.Models;
+using System.Collections;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
 namespace DeliveryService.Shared.Models
@@ -8,21 +10,18 @@ namespace DeliveryService.Shared.Models
         [Key]
         public int RiderDetailsId { get; set; }
 
+        [Required]
         public int TRN { get; set; }
 
+        [Required]
         public string LicencePlate { get; set; }
 
-        public string AssignedParish { get; set; }
+        public string AssignedParish { get; set; } 
 
+        [Required]
         public VehicleType Vehicle { get; set; }
 
-         public AppUser.Gender Sex { get; set; }
-
-        public int RiderId { get; set; }
-        public Rider Rider { get; set; }
-
-        public int? AddressId { get; set; }
-        public Address Address { get; set; }
+        public virtual ICollection<Rider> Riders { get; set; }
 
         public enum VehicleType
         {

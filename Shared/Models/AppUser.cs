@@ -16,13 +16,15 @@ namespace DeliveryService.Shared.Models
 
         public string LastName { get; set; }
 
+        [Required]
+        [DataType(DataType.EmailAddress)]
         public string Email { get; set; }
 
         public string Salt { get; set; }
 
         public string HashedPassword { get; set; }
 
-        public int Contact { get; set; }
+        public string Contact { get; set; }
 
         public string BetaCode { get; set; }
 
@@ -31,6 +33,8 @@ namespace DeliveryService.Shared.Models
         public string Nickname { get; set; }
 
         public bool IsActive { get; set; }
+
+        public string Biography { get; set; }
 
         public Gender Sex { get; set; }
 
@@ -43,11 +47,13 @@ namespace DeliveryService.Shared.Models
         public int? RiderId { get; set; }
         public virtual Rider Rider { get; set; }
 
-        public virtual ICollection<Order> Orders { get; set; }
+        public Store Store { get; set; }
+
         public virtual ICollection<Address> Addresses { get; set; }
-        public virtual ICollection<Review> Comments { get; set; }
+        public virtual ICollection<Review> Reviews { get; set; }
         public virtual ICollection<AppUserRoles> AppUserRoles { get; set; }
         public virtual ICollection<AppUserOrder> AppUserOrders { get; set; }
+        public virtual ICollection<AppUserReview> AppUserReviews { get; set; }
         public virtual ICollection<AppUserFavourite> AppUserFavourites { get; set; }
 
         public enum Gender

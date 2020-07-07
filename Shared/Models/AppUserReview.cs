@@ -6,7 +6,7 @@ namespace DeliveryService.Shared.Models
 {
     public class AppUserReview
     {
-        public int AppUserId { get; set; }
+        public long AppUserId { get; set; }
         public int ReviewId { get; set; }
 
         public Review Review { get; set; }

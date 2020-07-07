@@ -15,6 +15,7 @@ namespace DeliveryService.Shared.Models
 
         public string AddressLine2 { get; set; }
 
+        [Required]
         public string Country { get; set; } = "Jamaica";
 
         public string Parish { get; set; }

@@ -10,7 +10,7 @@ namespace DeliveryService.Server.Services
 {
     public interface IUserService
     {
-        Task<bool> DeleteUser(int id);
+        Task<bool> DeleteUser(long id);
         Task<List<AppUser>> GetUsers();
         Task<AppUser> GetUser(string email);
         Task<AppUser> CreateUser(AppUser user);
@@ -32,7 +32,7 @@ namespace DeliveryService.Server.Services
             throw new NotImplementedException();
         }
 
-        public Task<bool> DeleteUser(int id)
+        public Task<bool> DeleteUser(long id)
         {
             throw new NotImplementedException();
         }

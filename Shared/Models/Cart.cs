@@ -1,8 +1,6 @@
-﻿using DeliveryService.Models;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using System.Text;
 
 namespace DeliveryService.Shared.Models
 {
@@ -13,11 +11,13 @@ namespace DeliveryService.Shared.Models
 
         public int Quantity { get; set; }
 
+        public decimal Tax { get; set; }
+
         public DateTime CreatedAt { get; set; }
 
         public DateTime? UpdatedAt { get; set; }
 
-        public int AppUserId { get; set; }
+        public long AppUserId { get; set; }
         public AppUser AppUser { get; set; }
 
         public virtual ICollection<CartMenuItem> CartMenuItems { get; set; }

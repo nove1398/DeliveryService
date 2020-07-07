@@ -15,6 +15,6 @@ namespace DeliveryService.Shared.Models
 
         public string Description { get; set; }
 
-        public ICollection<AppUserRoles> APpUserRoles { get; set; }
+        public ICollection<AppUserRoles> AppUserRoles { get; set; }
     }
 }

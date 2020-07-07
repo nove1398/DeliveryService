@@ -25,9 +25,11 @@ namespace DeliveryService.Shared.Models
 
         public string Image { get; set; }
 
-        public int? StoreId { get; set; }
+        public long? StoreId { get; set; }
         public Store Store { get; set; }
 
+        public virtual ICollection<Review> Reviews { get; set; }
+        public virtual ICollection<MenuItemTag> MenuItemTags { get; set; }
         public virtual ICollection<CartMenuItem> CartMenuItems { get; set; }
         public virtual ICollection<OrderMenuItem> OrderMenuItems { get; set; }
         public virtual ICollection<CategoryMenuItem> CategoryMenuItems { get; set; }

@@ -17,7 +17,7 @@ namespace DeliveryService.Shared.Models
 
         public DateTime? UpdatedAt { get; set; }
 
-        public int? AppUserId { get; set; }
+        public long? AppUserId { get; set; }
         public AppUser AppUser { get; set; }
 
         public int RiderDetailsId { get; set; }

@@ -2,10 +2,10 @@
 {
     public class AppUserRoles
     {
-        public int AppRolesId { get; set; }
-        public int AppUserId { get; set; }
+        public int AppRoleId { get; set; }
+        public long AppUserId { get; set; }
 
         public AppUser AppUser { get; set; }
-        public AppRoles AppRoles { get; set; }
+        public AppRoles AppRole { get; set; }
     }
 }

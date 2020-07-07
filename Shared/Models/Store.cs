@@ -9,6 +9,7 @@ namespace DeliveryService.Shared.Models
         [Key]
         public long StoreId { get; set; }
 
+        [Required]
         public string Name { get; set; }
 
         public int Contact { get; set; }
@@ -21,6 +22,9 @@ namespace DeliveryService.Shared.Models
 
         public DateTime? UpdatedAt { get; set; }
 
+        public long? AppUserId { get; set; }
+        public AppUser AppUser { get; set; }
+
         public long? AddressId { get; set; }
         public Address Address { get; set; }
 
@@ -28,6 +32,5 @@ namespace DeliveryService.Shared.Models
         public int? ServiceTypeId { get; set; }
 
         public virtual ICollection<MenuItem> MenuItems { get; set; }
-        public virtual ICollection<StoreCategory> StoreCategories { get; set; }
     }
 }

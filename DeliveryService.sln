@@ -9,11 +9,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DeliveryService.Client", "C
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DeliveryService.Shared", "Shared\DeliveryService.Shared.csproj", "{18363085-CB13-4CCB-BE16-BDB0EAAF1653}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DeliveryService.Customer", "DeliveryService.Customer\DeliveryService.Customer.csproj", "{368A3D92-9608-4D04-A7DB-CCC41416D540}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DeliveryService.Customer", "DeliveryService.Customer\DeliveryService.Customer.csproj", "{368A3D92-9608-4D04-A7DB-CCC41416D540}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DeliveryService.Rider", "DeliveryService.Rider\DeliveryService.Rider.csproj", "{F8689421-2CF4-469C-9B53-770BCAFB1DFC}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SharedComponents", "SharedComponents\SharedComponents.csproj", "{29FF4703-9820-4D3B-BE68-F8113FF84EA5}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DeliveryService.Rider", "DeliveryService.Rider\DeliveryService.Rider.csproj", "{F8689421-2CF4-469C-9B53-770BCAFB1DFC}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -41,10 +39,6 @@ Global
 		{F8689421-2CF4-469C-9B53-770BCAFB1DFC}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F8689421-2CF4-469C-9B53-770BCAFB1DFC}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{F8689421-2CF4-469C-9B53-770BCAFB1DFC}.Release|Any CPU.Build.0 = Release|Any CPU
-		{29FF4703-9820-4D3B-BE68-F8113FF84EA5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{29FF4703-9820-4D3B-BE68-F8113FF84EA5}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{29FF4703-9820-4D3B-BE68-F8113FF84EA5}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{29FF4703-9820-4D3B-BE68-F8113FF84EA5}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -7,7 +7,7 @@ namespace DeliveryService.Shared.Models
 {
     public class AppUserOrder
     {
-        public int AppUserId { get; set; }
+        public long AppUserId { get; set; }
         public AppUser AppUser { get; set; }
 
         public long OrderId { get; set; }

@@ -10,6 +10,9 @@ namespace DeliveryService.Shared.Models
         [Key]
         public long AuditId { get; set; }
 
+        public DateTime CreatedAt { get; set; }
+
         public int AppUserId { get; set; }
+        public AppUser AppUser { get; set; }
     }
 }

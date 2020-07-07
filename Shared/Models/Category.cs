@@ -12,7 +12,7 @@ namespace DeliveryService.Models
         [Key]
         public long CategoryId { get; set; }
 
-        public string CateogryName { get; set; }
+        public string Name { get; set; }
 
         public string Description { get; set; }
 
@@ -20,7 +20,6 @@ namespace DeliveryService.Models
 
         public DateTime? UpdatedAt { get; set; }
 
-        public virtual ICollection<StoreCategory> StoreCategories { get; set; }
         public virtual ICollection<CategoryMenuItem> CategoryMenuItems { get; set; }
     }
 }

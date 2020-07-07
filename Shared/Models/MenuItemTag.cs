@@ -4,12 +4,12 @@ using System.Text;
 
 namespace DeliveryService.Shared.Models
 {
-    public class OrderMenuItem
+    public class MenuItemTag
     {
+        public int TagId { get; set; }
         public int MenuItemId { get; set; }
-        public long OrderId { get; set; }
 
-        public Order Order { get; set; }
+        public Tag Tag { get; set; }
         public MenuItem MenuItem { get; set; }
     }
 }

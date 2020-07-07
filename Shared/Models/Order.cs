@@ -1,11 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 
 namespace DeliveryService.Shared.Models
 {
     public class Order
     {
-        public int OrderId { get; set; }
+        [Key]
+        public long OrderId { get; set; }
 
         public DateTime CreatedAt { get; set; }
 
@@ -21,8 +23,10 @@ namespace DeliveryService.Shared.Models
 
         public decimal FinalPrice { get; set; }
         
-        public int StatusId { get; set; }
-        public virtual OrderStatus Status { get; set; }
+        public int Quantity { get; set; }
+
+        public int OrderStatusId { get; set; }
+        public virtual OrderStatus OrderStatus { get; set; }
 
         public bool IsPaid { get; set; }
 

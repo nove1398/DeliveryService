@@ -39,7 +39,7 @@ namespace DeliveryService.Server.Services
 
             foreach (var role in user.AppUserRoles)
             {
-                claims.Add(new Claim(ClaimTypes.Role, role.AppRoles.Name)); 
+                claims.Add(new Claim(ClaimTypes.Role, role.AppRole.Name)); 
             }
 
             var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_config["JWT:Key"]));
