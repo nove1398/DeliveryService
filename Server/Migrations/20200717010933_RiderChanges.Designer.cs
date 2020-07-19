@@ -4,14 +4,16 @@ using DeliveryService.Server.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace DeliveryService.Server.Migrations
 {
     [DbContext(typeof(DeliveryContext))]
-    partial class DeliveryContextModelSnapshot : ModelSnapshot
+    [Migration("20200717010933_RiderChanges")]
+    partial class RiderChanges
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -240,7 +242,7 @@ namespace DeliveryService.Server.Migrations
                             BetaCode = "gPOOLderZ",
                             Biography = "Hi, i'm new",
                             Contact = "18762782795",
-                            CreatedAt = new DateTime(2020, 7, 18, 19, 31, 24, 197, DateTimeKind.Local).AddTicks(2234),
+                            CreatedAt = new DateTime(2020, 7, 16, 20, 9, 33, 27, DateTimeKind.Local).AddTicks(1942),
                             DateOfBirth = new DateTime(1989, 11, 28, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Email = "nove1398@yahoo.com",
                             FirstName = "evon",
@@ -248,7 +250,7 @@ namespace DeliveryService.Server.Migrations
                             IsActive = true,
                             LastName = "franklin",
                             Nickname = "nove",
-                            Salt = "5GGCTQUv34kXKZCl/WjxKMRLXf7LXDGTKIVnlaZvB7ZL+Ly8CqOIlF5DHnBSL+4/gdg=",
+                            Salt = "tfgASWG3bGLbZctuVJf0j57WqHXQUl6DDh733l/eVY6pfNRte0hBWCDLCHkBpl88aMM=",
                             Sex = 0
                         });
                 });
@@ -711,9 +713,6 @@ namespace DeliveryService.Server.Migrations
 
                     b.Property<decimal>("DeliveryFee")
                         .HasColumnType("decimal(10,2)");
-
-                    b.Property<bool>("IsActive")
-                        .HasColumnType("bit");
 
                     b.Property<string>("Name")
                         .IsRequired()

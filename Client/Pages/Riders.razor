@@ -1,0 +1,77 @@
+﻿@page "/riders"
+@inject HttpHandler Http
+@attribute [Authorize]
+
+<h3>Manage Delivery Riders</h3>
+
+@if (isLoading)
+{
+    <p>Loading...</p>
+    return;
+}
+
+
+<EditForm Model="rider" OnInvalidSubmit="OnSubmit">
+    <DataAnnotationsValidator />
+    <div class="form-group">
+        <label>Related User Account</label>
+        <InputSelect @bind-Value="rider.AppUserId" class="form-control text-capitalize">1
+            @foreach (var user in usersList)
+            {
+                <option value="@user.AppUserId">@user.GetFullName()</option>
+            }
+        </InputSelect>
+        <p>Not found in this list? <button class="btn-sm btn-success">Add New</button></p>
+    </div>
+    <div class="form-group">
+        <label>Rider TRN</label>
+        <InputNumber @bind-Value="rider.RiderDetails.TRN" class="form-control" />
+    </div>
+    <div class="form-group">
+        <label>Rider License Plate</label>
+        <InputText @bind-Value="rider.RiderDetails.LicencePlate" class="form-control" />
+    </div>
+    <div class="form-group">
+        <label>Rider Assigned Parish</label>
+        <InputSelect @bind-Value="rider.RiderDetails.AssignedParish" class="form-control">
+            @foreach (var parish in Constants.Parishes)
+            {
+                <option value="@parish">@parish</option>
+            }
+        </InputSelect>
+    </div>
+    <div class="form-group">
+        <label>Rider Vehicle Type</label>
+        <InputSelect @bind-Value="rider.RiderDetails.Vehicle" class="form-control">
+            <option value="@RiderDetails.VehicleType.Bicycle">@RiderDetails.VehicleType.Bicycle</option>
+            <option value="@RiderDetails.VehicleType.Bike">@RiderDetails.VehicleType.Bike</option>
+            <option value="@RiderDetails.VehicleType.Bus">@RiderDetails.VehicleType.Bus</option>
+            <option value="@RiderDetails.VehicleType.Car">@RiderDetails.VehicleType.Car</option>
+            <option value="@RiderDetails.VehicleType.Taxi">@RiderDetails.VehicleType.Taxi</option>
+        </InputSelect>
+    </div>
+    <div class="col-12">
+        <button class="btn btn-primary">Submit</button>
+    </div>
+</EditForm>
+
+
+@code {
+    private Rider rider = new Rider() { RiderDetails = new RiderDetails() };
+    private List<AppUser> usersList;
+    private bool isLoading = false;
+
+    protected override async Task OnInitializedAsync()
+    {
+        isLoading = true;
+        var result = await Http.GetJsonAsync<ResponseModel<List<AppUser>>>("/api/appusers");
+        if (result.IsSuccess)
+            usersList = result.Data;
+        isLoading = false;
+    }
+
+    private async void OnSubmit()
+    {
+
+    }
+}

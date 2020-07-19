@@ -1,12 +1,23 @@
 ﻿@inherits LayoutComponentBase
+@inject AuthStateHandler AuthState
+
+
+
 
 <div class="sidebar">
     <NavMenu />
 </div>
 
 <div class="main">
-    <div class="top-row px-4">
-        <a href="#" target="_blank" class="ml-md-auto">Contact</a>
+    <div class="top-row px-4 d-flex justify-content-end">
+        <AuthorizeView>
+            <Authorized>
+                <a href="#" class="text-capitalize">
+                   @context.User.Identity.Name @context.User.Claims.FirstOrDefault(x => x.Type == System.Security.Claims.ClaimTypes.Surname).Value
+                            </a>
+
+            </Authorized>
+        </AuthorizeView>
     </div>
 
     <div class="content px-4">

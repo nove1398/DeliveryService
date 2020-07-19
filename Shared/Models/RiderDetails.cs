@@ -21,7 +21,7 @@ namespace DeliveryService.Shared.Models
         [Required]
         public VehicleType Vehicle { get; set; }
 
-        public virtual ICollection<Rider> Riders { get; set; }
+        public virtual Rider Rider { get; set; }
 
         public enum VehicleType
         {

@@ -1,5 +1,15 @@
-﻿<h3>Redirector</h3>
+﻿@inject NavigationManager Navman
+@inject AuthStateHandler AuthState
 
 @code {
 
+
+    protected async override Task OnInitializedAsync()
+    {
+        var user = (await AuthState.GetAuthenticationStateAsync()).User;
+        if (!user.Identity.IsAuthenticated)
+        {
+            Navman.NavigateTo($"/auth/login?returnUrl="+Uri.EscapeDataString(Navman.Uri));
+        }
+    }
 }

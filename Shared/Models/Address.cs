@@ -1,8 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace DeliveryService.Shared.Models
 {
@@ -11,6 +8,7 @@ namespace DeliveryService.Shared.Models
         [Key]
         public long AddressId { get; set; }
 
+        [Required]
         public string AddressLine1 { get; set; }
 
         public string AddressLine2 { get; set; }
@@ -18,6 +16,7 @@ namespace DeliveryService.Shared.Models
         [Required]
         public string Country { get; set; } = "Jamaica";
 
+        [Required]
         public string Parish { get; set; }
 
         public int ZipCode { get; set; } = 876; 
@@ -26,5 +25,7 @@ namespace DeliveryService.Shared.Models
         public AppUser AppUser { get; set; }
 
         public virtual ICollection<Store> Stores { get; set; }
+
+        
     }
 }

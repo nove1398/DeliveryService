@@ -9,6 +9,7 @@ using System.Text;
 using Microsoft.EntityFrameworkCore;
 using DeliveryService.Server.Services;
 using DeliveryService.Server.Data;
+using DeliveryService.Shared.Models;
 
 namespace DeliveryService.Server
 {
@@ -56,6 +57,8 @@ namespace DeliveryService.Server
 
             services.AddTransient<ITokenService, TokenService>();
             services.AddTransient<IUserService, UserService>();
+            services.AddTransient<IStoreService, StoreService>();
+            services.AddTransient<IRiderService, RiderService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

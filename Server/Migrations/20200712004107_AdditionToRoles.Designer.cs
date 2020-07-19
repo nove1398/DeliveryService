@@ -4,14 +4,16 @@ using DeliveryService.Server.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace DeliveryService.Server.Migrations
 {
     [DbContext(typeof(DeliveryContext))]
-    partial class DeliveryContextModelSnapshot : ModelSnapshot
+    [Migration("20200712004107_AdditionToRoles")]
+    partial class AdditionToRoles
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -78,7 +80,6 @@ namespace DeliveryService.Server.Migrations
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
                     b.Property<string>("AddressLine1")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("AddressLine2")
@@ -92,7 +93,6 @@ namespace DeliveryService.Server.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Parish")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<int>("ZipCode")
@@ -240,15 +240,15 @@ namespace DeliveryService.Server.Migrations
                             BetaCode = "gPOOLderZ",
                             Biography = "Hi, i'm new",
                             Contact = "18762782795",
-                            CreatedAt = new DateTime(2020, 7, 18, 19, 31, 24, 197, DateTimeKind.Local).AddTicks(2234),
+                            CreatedAt = new DateTime(2020, 7, 11, 19, 41, 6, 581, DateTimeKind.Local).AddTicks(5859),
                             DateOfBirth = new DateTime(1989, 11, 28, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Email = "nove1398@yahoo.com",
                             FirstName = "evon",
-                            HashedPassword = "XohImNooBHFR0OVvjcYpJ3NgPQ1qq73WKhHvch0VQtg=",
+                            HashedPassword = "WBXjg0VZfDI6Y8zQzkP78mmgbSDbp+Sj3mmeemXtWfXkgBlpSJN+4MFnQptOA8PGeFs=XohImNooBHFR0OVvjcYpJ3NgPQ1qq73WKhHvch0VQtg=",
                             IsActive = true,
                             LastName = "franklin",
                             Nickname = "nove",
-                            Salt = "5GGCTQUv34kXKZCl/WjxKMRLXf7LXDGTKIVnlaZvB7ZL+Ly8CqOIlF5DHnBSL+4/gdg=",
+                            Salt = "WBXjg0VZfDI6Y8zQzkP78mmgbSDbp+Sj3mmeemXtWfXkgBlpSJN+4MFnQptOA8PGeFs=",
                             Sex = 0
                         });
                 });
@@ -311,13 +311,6 @@ namespace DeliveryService.Server.Migrations
                     b.HasIndex("AppUserId");
 
                     b.ToTable("AppUserRoles");
-
-                    b.HasData(
-                        new
-                        {
-                            AppRoleId = 1,
-                            AppUserId = 1L
-                        });
                 });
 
             modelBuilder.Entity("DeliveryService.Shared.Models.Audit", b =>
@@ -634,8 +627,7 @@ namespace DeliveryService.Server.Migrations
 
                     b.HasKey("RiderId");
 
-                    b.HasIndex("RiderDetailsId")
-                        .IsUnique();
+                    b.HasIndex("RiderDetailsId");
 
                     b.ToTable("Riiders");
                 });
@@ -711,9 +703,6 @@ namespace DeliveryService.Server.Migrations
 
                     b.Property<decimal>("DeliveryFee")
                         .HasColumnType("decimal(10,2)");
-
-                    b.Property<bool>("IsActive")
-                        .HasColumnType("bit");
 
                     b.Property<string>("Name")
                         .IsRequired()
@@ -937,8 +926,9 @@ namespace DeliveryService.Server.Migrations
             modelBuilder.Entity("DeliveryService.Shared.Models.Rider", b =>
                 {
                     b.HasOne("DeliveryService.Shared.Models.RiderDetails", "RiderDetails")
-                        .WithOne("Rider")
-                        .HasForeignKey("DeliveryService.Shared.Models.Rider", "RiderDetailsId")
+                        .WithMany("Riders")
+                        .HasForeignKey("RiderDetailsId")
+                        .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
                 });
 

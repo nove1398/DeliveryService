@@ -49,8 +49,8 @@ namespace DeliveryService.Shared.Models
 
         public Store Store { get; set; }
 
-        public virtual ICollection<Address> Addresses { get; set; }
         public virtual ICollection<Review> Reviews { get; set; }
+        public virtual ICollection<Address> Addresses { get; set; }
         public virtual ICollection<AppUserRoles> AppUserRoles { get; set; }
         public virtual ICollection<AppUserOrder> AppUserOrders { get; set; }
         public virtual ICollection<AppUserReview> AppUserReviews { get; set; }
@@ -59,6 +59,11 @@ namespace DeliveryService.Shared.Models
         public enum Gender
         {
             Male,Female
+        }
+
+        public string GetFullName()
+        {
+            return FirstName + " " + LastName;
         }
     }
 }

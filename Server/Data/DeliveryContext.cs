@@ -14,8 +14,10 @@ namespace DeliveryService.Server.Data
         protected override void OnModelCreating(ModelBuilder builder)
         {
             // JOINS M > - - - - < M
+            var role = new AppUserRoles { AppRoleId = 1, AppUserId = 1 };
             builder.Entity<AppUserRoles>(entity =>
             {
+                entity.HasData(role);
                 entity.HasKey(e => new { e.AppRoleId, e.AppUserId });
                 entity.HasOne(aur => aur.AppUser).WithMany(au => au.AppUserRoles).HasForeignKey(aur => aur.AppUserId);
                 entity.HasOne(aur => aur.AppRole).WithMany(au => au.AppUserRoles).HasForeignKey(aur => aur.AppRoleId);
@@ -80,7 +82,7 @@ namespace DeliveryService.Server.Data
             user.DateOfBirth = new DateTime(1989, 11, 28);
             user.Nickname = "nove";
             user.Salt = creds.Salt;
-            user.HashedPassword = creds.HashedPass;
+            user.HashedPassword = creds.Password;
 
             builder.Entity<AppUser>(entity =>
             {
@@ -124,7 +126,7 @@ namespace DeliveryService.Server.Data
                 new AppRoles { AppRolesId = 2, Description="Customer making an order", Name ="Customer" },
                 new AppRoles { AppRolesId = 3, Description="Courier delivery", Name ="Rider" },
                 new AppRoles { AppRolesId = 4, Description="Store user managing the store account", Name ="Store" },
-                new AppRoles { AppRolesId = 4, Description="Base account, no value or moral. No contribution to the community", Name ="User" }
+                new AppRoles { AppRolesId = 5, Description="Base account, no value or moral. No contribution to the community", Name ="User" }
             };
             builder.Entity<AppRoles>(entity =>
             {
@@ -199,7 +201,7 @@ namespace DeliveryService.Server.Data
                 entity.Property(c => c.CreatedAt).HasDefaultValueSql("GETDATE()");
                 entity.Property(c => c.UpdatedAt).IsRequired(false);
 
-                entity.HasOne(r => r.RiderDetails).WithMany(r => r.Riders).HasForeignKey(r => r.RiderDetailsId).OnDelete(DeleteBehavior.NoAction);
+                entity.HasOne(r => r.RiderDetails).WithOne(r => r.Rider).OnDelete(DeleteBehavior.ClientSetNull);
                 entity.HasOne(r => r.AppUser).WithOne(r => r.Rider).IsRequired(false).HasForeignKey<AppUser>(au => au.RiderId).OnDelete(DeleteBehavior.SetNull);
             });
 

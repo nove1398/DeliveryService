@@ -16,6 +16,7 @@ namespace DeliveryService.Server.Services
         Task<AppUser> CreateUser(AppUser user);
         Task<AppUser> UpdateUser(AppUser updatedUser);
         Task<List<AppUser>> UsersByRole(int roleId);
+        Task<List<AppUserRoles>> UserRoles(int userId);
     }
 
     public class UserService : IUserService
@@ -27,9 +28,11 @@ namespace DeliveryService.Server.Services
             _context = context;
         }
 
-        public Task<AppUser> CreateUser(AppUser user)
+        public async Task<AppUser> CreateUser(AppUser user)
         {
-            throw new NotImplementedException();
+            _context.AppUsers.Add(user);
+            await _context.SaveChangesAsync();
+            return user;
         }
 
         public Task<bool> DeleteUser(long id)
@@ -39,12 +42,12 @@ namespace DeliveryService.Server.Services
 
         public async Task<AppUser> GetUser(string email)
         {
-            return await _context.AppUsers.FirstOrDefaultAsync(x => x.Email == email);
+            return await _context.AppUsers.Include(x => x.AppUserRoles).ThenInclude(x=>x.AppRole).FirstOrDefaultAsync(x => x.Email == email);
         }
 
-        public Task<List<AppUser>> GetUsers()
+        public async Task<List<AppUser>> GetUsers()
         {
-            throw new NotImplementedException();
+            return await _context.AppUsers.AsNoTracking().Where(x => x.IsActive).ToListAsync();
         }
 
         public Task<AppUser> UpdateUser(AppUser updatedUser)
@@ -52,9 +55,16 @@ namespace DeliveryService.Server.Services
             throw new NotImplementedException();
         }
 
-        public Task<List<AppUser>> UsersByRole(int roleId)
+        public Task<List<AppUserRoles>> UserRoles(int userId)
         {
             throw new NotImplementedException();
         }
+
+        public Task<List<AppUser>> UsersByRole(int roleId)
+        {
+            //return await _context.AppUserRoles.AsNoTracking().Where(x => x.AppUserId == roleId).ToListAsync();
+            throw new NotImplementedException();
+        }
+    
     }
 }
