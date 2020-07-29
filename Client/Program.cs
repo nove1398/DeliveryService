@@ -6,6 +6,7 @@ using Microsoft.Extensions.DependencyInjection;
 using DeliveryService.Client.Handlers;
 using Microsoft.AspNetCore.Components.Authorization;
 using DeliveryService.Shared.Constants;
+using DeliveryService.Server.Middleware;
 
 namespace DeliveryService.Client
 {
@@ -23,15 +24,16 @@ namespace DeliveryService.Client
                 config.AddPolicy(PolicyHandler.IsUser, PolicyHandler.IsUserPolicy());
             });
 
-            //builder.Services.AddTransient(sp => new HttpClient { BaseAddress = new Uri(builder.HostEnvironment.BaseAddress) });
-            builder.Services.AddTransient<HttpHandler>();
+            //builder.Services.AddTransient<HttpHandler>();
             builder.Services.AddTransient<LocalStorageHandler>();
+            builder.Services.AddTransient<ApiMiddleware>();
             var toke = await builder.Services.BuildServiceProvider().GetRequiredService<LocalStorageHandler>().GetItem<string>(Constants.JWTKey);
             builder.Services.AddHttpClient<HttpHandler>(
                  client => {
                     client.BaseAddress = new Uri(builder.HostEnvironment.BaseAddress);
                     client.DefaultRequestHeaders.Add("Authorization", $"Bearer {toke}");
-                });
+                })
+                .AddHttpMessageHandler<ApiMiddleware>();
             builder.Services.AddTransient<AuthStateHandler>();
             builder.Services.AddTransient<AuthenticationStateProvider>(provider => provider.GetRequiredService<AuthStateHandler>());
             await builder.Build().RunAsync();

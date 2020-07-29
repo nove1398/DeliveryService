@@ -15,16 +15,15 @@ namespace DeliveryService.Shared.Models
 
         [Required]
         public string Country { get; set; } = "Jamaica";
-
+    
         [Required]
-        public string Parish { get; set; }
+        public int ParishId { get; set; }
+        public Parish Parish { get; set; }
 
         public int ZipCode { get; set; } = 876; 
 
-        public long? AppUserId { get; set; }
-        public AppUser AppUser { get; set; }
-
         public virtual ICollection<Store> Stores { get; set; }
+        public virtual ICollection<AppUser> AppUsers { get; set; }
 
         
     }

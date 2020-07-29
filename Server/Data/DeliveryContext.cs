@@ -61,15 +61,20 @@ namespace DeliveryService.Server.Data
             builder.Entity<MenuItemTag>(entity =>
             {
                 entity.HasKey(e => new { e.MenuItemId, e.TagId });
-                entity.HasOne(aur => aur.MenuItem).WithMany(au => au.MenuItemTags).HasForeignKey(aur => aur.MenuItemId);
                 entity.HasOne(aur => aur.Tag).WithMany(au => au.MenuItemTags).HasForeignKey(aur => aur.TagId);
+                entity.HasOne(aur => aur.MenuItem).WithMany(au => au.MenuItemTags).HasForeignKey(aur => aur.MenuItemId);
+            });
+            builder.Entity<AppUserStore>(entity =>
+            {
+                entity.HasKey(e => new { e.AppUserId, e.StoreId });
+                entity.HasOne(aur => aur.Store).WithMany(au => au.AppUserStores).HasForeignKey(aur => aur.StoreId);
+                entity.HasOne(aur => aur.AppUser).WithMany(au => au.AppUserStores).HasForeignKey(aur => aur.AppUserId);
             });
 
             //AppUser
             var hasher = new PasswordHasher();
             var creds = hasher.HashPassword("password");
             var user = new AppUser();
-            user.AppUserId = 1;
             user.Sex = AppUser.Gender.Male;
             user.FirstName = "evon";
             user.LastName = "franklin";
@@ -87,18 +92,19 @@ namespace DeliveryService.Server.Data
             builder.Entity<AppUser>(entity =>
             {
                 entity.HasData(user);
+                entity.Property(au => au.AppUserId).UseIdentityColumn(1,1);
                 entity.Property(a => a.CreatedAt).HasDefaultValueSql("GETDATE()");
                 entity.Property(a => a.UpdatedAt).IsRequired(false);
                 entity.Property(a => a.DateOfBirth).IsRequired(false);
                 
                 entity.HasMany(au => au.Reviews).WithOne(r => r.AppUser).HasForeignKey(r => r.AppUserId).OnDelete(DeleteBehavior.NoAction);
-                entity.HasMany(au => au.Addresses).WithOne(a => a.AppUser).HasForeignKey(a => a.AppUserId).OnDelete(DeleteBehavior.NoAction);
+                entity.HasOne(au => au.Address).WithMany(a => a.AppUsers).HasForeignKey(a => a.AppUserId).OnDelete(DeleteBehavior.NoAction);
                 entity.HasMany(au => au.Reviews).WithOne(a => a.AppUser).HasForeignKey(a => a.AppUserId).OnDelete(DeleteBehavior.NoAction);
 
             });
 
             //Address
-            var address = new Address() { AddressId = 1, AddressLine1 = "merrivale apartments", AddressLine2 = "13 merrivale close", Parish = "Kingston", AppUserId = 1 };
+            var address = new Address() { AddressId = 1, AddressLine1 = "merrivale apartments", AddressLine2 = "13 merrivale close", ParishId = 1 };
             builder.Entity<Address>(entity =>
             {
                 entity.HasData(address);
@@ -202,19 +208,27 @@ namespace DeliveryService.Server.Data
                 entity.Property(c => c.UpdatedAt).IsRequired(false);
 
                 entity.HasOne(r => r.RiderDetails).WithOne(r => r.Rider).OnDelete(DeleteBehavior.ClientSetNull);
-                entity.HasOne(r => r.AppUser).WithOne(r => r.Rider).IsRequired(false).HasForeignKey<AppUser>(au => au.RiderId).OnDelete(DeleteBehavior.SetNull);
+                entity.HasOne(r => r.AppUser).WithOne(r => r.Rider).IsRequired(false).HasForeignKey<Rider>(au => au.AppUserId).OnDelete(DeleteBehavior.SetNull);
             });
 
             //RiderDetails
             builder.Entity<RiderDetails>(entity =>
             {
-
+                entity.HasOne(rd => rd.Rider).WithOne(r => r.RiderDetails).IsRequired(false).OnDelete(DeleteBehavior.Cascade);
             });
 
             //ServiceType
+            List<ServiceType> types = new List<ServiceType>();
+            types.Add(new ServiceType { Description = "Stores that offer food service", Name ="Food", ServiceTypeId = 1 });
+            types.Add(new ServiceType { Description = "Stores that offer courier service", Name ="Courier", ServiceTypeId = 2 });
             builder.Entity<ServiceType>(entity =>
             {
-                entity.HasMany(st => st.Stores).WithOne(s => s.ServiceType).IsRequired(false).HasForeignKey(s => s.ServiceTypeId).OnDelete(DeleteBehavior.SetNull);
+                entity.HasData(types);
+                entity.HasMany(st => st.Stores)
+                .WithOne(s => s.ServiceType)
+                .IsRequired(false)
+                .HasForeignKey(s => s.ServiceTypeId)
+                .OnDelete(DeleteBehavior.SetNull);
             });
 
             //Store
@@ -224,9 +238,33 @@ namespace DeliveryService.Server.Data
                 entity.Property(c => c.UpdatedAt).IsRequired(false);
                 entity.Property(o => o.DeliveryFee).HasColumnType("decimal(10,2)");
                 entity.Property(o => o.Commission).HasColumnType("decimal(10,2)");
+                entity.Property(o => o.Contact).HasMaxLength(20);
 
                 entity.HasOne(s => s.Address).WithMany(a => a.Stores).IsRequired().HasForeignKey(s => s.AddressId).OnDelete(DeleteBehavior.ClientSetNull);
 
+            });
+
+            //Parish
+            List<Parish> parishes = new List<Parish>()
+            {
+                new Parish{ Name = "Kingston", ParishId = 1},
+                new Parish{ Name = "St. Andrew", ParishId = 2},
+                new Parish{ Name = "Portland", ParishId = 3},
+                new Parish{ Name = "St. Thomas", ParishId = 4},
+                new Parish{ Name = "St. Mary", ParishId = 5},
+                new Parish{ Name = "Clarendon", ParishId = 6},
+                new Parish{ Name = "St. Ann", ParishId = 7},
+                new Parish{ Name = "Manchester", ParishId = 8},
+                new Parish{ Name = "St. Elizabeth", ParishId = 9},
+                new Parish{ Name = "Trelawny", ParishId = 10},
+                new Parish{ Name = "Westmoreland", ParishId = 11},
+                new Parish{ Name = "St. James", ParishId = 12},
+                new Parish{ Name = "Hanover", ParishId = 13},
+                new Parish{ Name = "St. Catherine", ParishId = 14}
+            };
+            builder.Entity<Parish>(entity =>
+            {
+                entity.HasData(parishes);
             });
         }
 
@@ -237,6 +275,7 @@ namespace DeliveryService.Server.Data
         public DbSet<AppUserFavourite> AppUserFavourites { get; set; }
         public DbSet<AppUserOrder> AppUserOrders { get; set; }
         public DbSet<AppUserReview> AppUserReviews { get; set; }
+        public DbSet<AppUserStore> AppUserStores { get; set; }
         public DbSet<AppUserRoles> AppUserRoles { get; set; }
         public DbSet<Audit> Audits { get; set; }
         public DbSet<Cart> Carts { get; set; }
@@ -251,10 +290,11 @@ namespace DeliveryService.Server.Data
         public DbSet<OrderStatus> OrderStatuses { get; set; }
         public DbSet<PasswordReset> PasswordResets { get; set; }
         public DbSet<Review> Reviews { get; set; }
-        public DbSet<Rider> Riiders { get; set; }
+        public DbSet<Rider> Riders { get; set; }
         public DbSet<RiderDetails> RiderDetails { get; set; }
         public DbSet<ServiceType> ServiceTypes { get; set; }
         public DbSet<Store> Stores { get; set; }
         public DbSet<Tag> Tags { get; set; }
+        public DbSet<Parish> Parishes { get; set; }
     }
 }

@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace DeliveryService.Shared.API
 {
-    public class ResponseModel <T>  where T : class
+    public class ResponseModel <T>  where T : class, new()
     {
         public T Data { get; set; }
 

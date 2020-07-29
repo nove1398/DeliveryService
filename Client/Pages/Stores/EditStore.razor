@@ -1,0 +1,129 @@
+﻿@page "/editStore/{id:int}"
+@inject HttpHandler HTTP
+@inject NavigationManager NavMan
+
+
+<h3>Edit Store</h3>
+
+
+@if (isLoading)
+{
+    <div class="text-center">Content Loading...</div>
+    return;
+}
+
+<EditForm Model="store" OnValidSubmit="UpdateStore">
+    <ObjectGraphDataAnnotationsValidator />
+    @if (!string.IsNullOrEmpty(statusMessage))
+    {
+        <AlertComponent text="statusMessage" />
+    }
+    <div class="form-group">
+        <label>Name</label>
+        <InputText class="form-control" @bind-Value="store.Name" />
+        <ValidationMessage For="@(() => store.Name)" />
+    </div>
+    <div class="form-group">
+        <label>Contact</label>
+        <InputText class="form-control" @bind-Value="store.Contact" />
+        <ValidationMessage For="@(() => store.Contact)" />
+    </div>
+    <div class="form-group">
+        <label>Commission</label>
+        <InputNumber class="form-control" @bind-Value="store.Commission" />
+        <ValidationMessage For="@(() => store.Commission)" />
+    </div>
+    <div class="form-group">
+        <label>Delivery Fee</label>
+        <InputNumber class="form-control" @bind-Value="store.DeliveryFee" />
+        <ValidationMessage For="@(() => store.DeliveryFee)" />
+    </div>
+    <div class="form-group">
+        <label>Service Type Offered</label>
+        <InputSelectNumber @bind-Value="store.ServiceTypeId" class="form-control">
+            <option selected>Select Service Type</option>
+            @foreach (var service in serviceTypes)
+            {
+                <option value="@service.ServiceTypeId">@service.Name</option>
+            }
+        </InputSelectNumber>
+        <ValidationMessage For="@(() => store.ServiceTypeId)" />
+    </div>
+    <div class="form-group">
+        <label>Address Line1</label>
+        <InputText class="form-control" @bind-Value="store.Address.AddressLine1" />
+        <ValidationMessage For="@(() => store.Address.AddressLine1)" />
+    </div>
+    <div class="form-group">
+        <label>Address Line2</label>
+        <InputText class="form-control" @bind-Value="store.Address.AddressLine2" />
+        <ValidationMessage For="@(() => store.Address.AddressLine2)" />
+    </div>
+    <div class="form-group">
+        <label>Parish</label>
+        <InputSelectNumber class="form-control" @bind-Value="@store.Address.ParishId">
+            <option selected>Select Parish</option>
+            @foreach (var parish in parishList)
+            {
+                <option value="@parish.ParishId">@parish.Name</option>
+            }
+        </InputSelectNumber>
+        <ValidationMessage For="@(() => store.Address.Parish)" />
+    </div>
+    <div class="form-group">
+        <label>Country</label>
+        <div class="form-control" disabled>@store.Address.Country</div>
+        <ValidationMessage For="@(() => store.Address.Country)" />
+    </div>
+    <div class="form-group">
+        <label>Zipcode</label>
+        <div class="form-control" disabled>@store.Address.ZipCode</div>
+        <ValidationMessage For="@(() => store.Address.ZipCode)" />
+    </div>
+    <div>
+        <button class="btn btn-primary">Submit</button>
+    </div>
+</EditForm>
+
+@code {
+    Store store = new Store();
+    private string statusMessage;
+    private bool isLoading = false;
+    private List<Parish> parishList;
+    private List<ServiceType> serviceTypes;
+
+
+    [Parameter]
+    public int Id { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        isLoading = true;
+        var storeResponse = await HTTP.GetJsonAsync<ResponseModel<Store>>($"/api/stores/{Id}");
+        if (storeResponse.IsSuccess)
+        {
+            store = storeResponse.Data;
+        }
+        else
+        {
+            //Failed to find store
+            NavMan.NavigateTo("/stores");
+            return;
+        }
+
+        var parishes = await HTTP.GetJsonAsync<ResponseModel<List<Parish>>>("/api/parishes");
+        parishList = parishes.Data;
+
+        var result = await HTTP.GetJsonAsync<ResponseModel<List<ServiceType>>>("/api/servicetypes");
+        if (result.IsSuccess)
+        {
+            serviceTypes = result.Data;
+        }
+        isLoading = false;
+    }
+
+    async Task UpdateStore()
+    {
+
+    }
+}

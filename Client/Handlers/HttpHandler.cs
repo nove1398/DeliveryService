@@ -15,7 +15,6 @@ namespace DeliveryService.Client.Handlers
         {
             _client = client;
             _storage = storage;
-
         }
 
         private async Task AddHeader()
@@ -25,7 +24,7 @@ namespace DeliveryService.Client.Handlers
         }
         public async Task<T> GetJsonAsync<T>(string url)
         {
-            await AddHeader();
+            
             var result = await _client.GetAsync(url);
             var answer = await result.Content.ReadAsStringAsync();
             var data = JsonConvert.DeserializeObject<T>(answer);
@@ -34,7 +33,7 @@ namespace DeliveryService.Client.Handlers
 
         public async Task<T> PutAsync<T>(string url, object model)
         {
-            await AddHeader();
+            
             var json = JsonConvert.SerializeObject(model);
             var payLoad = new StringContent(json, Encoding.UTF8, "application/json");
             var result = await _client.PutAsync(url, payLoad);
@@ -45,7 +44,7 @@ namespace DeliveryService.Client.Handlers
 
         public async Task<T> PostAsync<T>(string url, object model)
         {
-            await AddHeader();
+            
             var json = JsonConvert.SerializeObject(model);
             var payLoad = new StringContent(json, Encoding.UTF8, "application/json");
             var result = await _client.PostAsync(url, payLoad);
@@ -56,7 +55,7 @@ namespace DeliveryService.Client.Handlers
 
         public async Task<T> DeleteAsync<T>(string url)
         {
-            await AddHeader();
+            
             var result = await _client.DeleteAsync(url);
             var answer = await result.Content.ReadAsStringAsync();
             var data = JsonConvert.DeserializeObject<T>(answer);

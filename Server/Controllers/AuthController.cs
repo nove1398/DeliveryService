@@ -15,12 +15,14 @@ namespace DeliveryService.Server.Controllers
     {
         private readonly ITokenService _tokenService;
         private readonly IUserService _userService;
+        private readonly IGeneralService _generalService;
         private readonly PasswordHasher _passwordHash;
 
-        public AuthController(ITokenService tokenService,IUserService userService)
+        public AuthController(ITokenService tokenService,IUserService userService,IGeneralService generalService)
         {
             _tokenService = tokenService;
             _userService = userService;
+            _generalService = generalService;
             _passwordHash = new PasswordHasher();
         }
 
@@ -48,8 +50,10 @@ namespace DeliveryService.Server.Controllers
         {
             if (!ModelState.IsValid)
             {
-                return BadRequest(new ResponseModel<string> { IsSuccess = false, Message = "Invalid form data sent"});
+                return BadRequest(new ResponseModel<AppUser> { IsSuccess = false, Message = "Invalid form data sent", Data = null});
             }
+
+            var newAddress = await _generalService.AddNewAddress(request.Address);
 
             var hashedObj = _passwordHash.HashPassword(request.Password);
             var newUser = new AppUser();
@@ -58,7 +62,7 @@ namespace DeliveryService.Server.Controllers
             newUser.Email = request.Email;
             newUser.HashedPassword = hashedObj.Password;
             newUser.Salt = hashedObj.Salt;
-            newUser.Addresses.Add(request.Address);
+            newUser.AddressId = newAddress.AddressId; 
 
 
             var createdUser = await _userService.CreateUser(newUser);

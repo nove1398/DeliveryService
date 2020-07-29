@@ -67,6 +67,19 @@ namespace DeliveryService.Server.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "Parishes",
+                columns: table => new
+                {
+                    ParishId = table.Column<int>(nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Name = table.Column<string>(nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Parishes", x => x.ParishId);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "PasswordResets",
                 columns: table => new
                 {
@@ -133,6 +146,7 @@ namespace DeliveryService.Server.Migrations
                     UpdatedAt = table.Column<DateTime>(nullable: true),
                     EstimatedDeliveryTime = table.Column<DateTime>(nullable: true),
                     DeliveredAt = table.Column<DateTime>(nullable: true),
+                    DeletedAt = table.Column<DateTime>(nullable: true),
                     Details = table.Column<string>(nullable: true),
                     Discount = table.Column<decimal>(type: "decimal(10,2)", nullable: false),
                     FinalPrice = table.Column<decimal>(type: "decimal(10,2)", nullable: false),
@@ -154,40 +168,39 @@ namespace DeliveryService.Server.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Riiders",
+                name: "Address",
                 columns: table => new
                 {
-                    RiderId = table.Column<int>(nullable: false)
+                    AddressId = table.Column<long>(nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    IsAccountActive = table.Column<bool>(nullable: false),
-                    IsAvailable = table.Column<bool>(nullable: false),
-                    CreatedAt = table.Column<DateTime>(nullable: false, defaultValueSql: "GETDATE()"),
-                    UpdatedAt = table.Column<DateTime>(nullable: true),
-                    AppUserId = table.Column<long>(nullable: true),
-                    RiderDetailsId = table.Column<int>(nullable: false)
+                    AddressLine1 = table.Column<string>(nullable: false),
+                    AddressLine2 = table.Column<string>(nullable: true),
+                    Country = table.Column<string>(nullable: false),
+                    ParishId = table.Column<int>(nullable: false),
+                    ZipCode = table.Column<int>(nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Riiders", x => x.RiderId);
+                    table.PrimaryKey("PK_Address", x => x.AddressId);
                     table.ForeignKey(
-                        name: "FK_Riiders_RiderDetails_RiderDetailsId",
-                        column: x => x.RiderDetailsId,
-                        principalTable: "RiderDetails",
-                        principalColumn: "RiderDetailsId");
+                        name: "FK_Address_Parishes_ParishId",
+                        column: x => x.ParishId,
+                        principalTable: "Parishes",
+                        principalColumn: "ParishId",
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
                 name: "AppUsers",
                 columns: table => new
                 {
-                    AppUserId = table.Column<long>(nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
+                    AppUserId = table.Column<long>(nullable: false),
                     FirstName = table.Column<string>(nullable: true),
                     LastName = table.Column<string>(nullable: true),
                     Email = table.Column<string>(nullable: false),
                     Salt = table.Column<string>(nullable: true),
                     HashedPassword = table.Column<string>(nullable: true),
-                    Contact = table.Column<int>(nullable: false),
+                    Contact = table.Column<string>(nullable: true),
                     BetaCode = table.Column<string>(nullable: true),
                     Photo = table.Column<string>(nullable: true),
                     Nickname = table.Column<string>(nullable: true),
@@ -197,40 +210,17 @@ namespace DeliveryService.Server.Migrations
                     DateOfBirth = table.Column<DateTime>(nullable: true),
                     CreatedAt = table.Column<DateTime>(nullable: false, defaultValueSql: "GETDATE()"),
                     UpdatedAt = table.Column<DateTime>(nullable: true),
-                    RiderId = table.Column<int>(nullable: true)
+                    DeletedAt = table.Column<DateTime>(nullable: true),
+                    AddressId = table.Column<long>(nullable: true)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_AppUsers", x => x.AppUserId);
                     table.ForeignKey(
-                        name: "FK_AppUsers_Riiders_RiderId",
-                        column: x => x.RiderId,
-                        principalTable: "Riiders",
-                        principalColumn: "RiderId",
-                        onDelete: ReferentialAction.SetNull);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "Address",
-                columns: table => new
-                {
-                    AddressId = table.Column<long>(nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    AddressLine1 = table.Column<string>(nullable: true),
-                    AddressLine2 = table.Column<string>(nullable: true),
-                    Country = table.Column<string>(nullable: false),
-                    Parish = table.Column<string>(nullable: true),
-                    ZipCode = table.Column<int>(nullable: false),
-                    AppUserId = table.Column<long>(nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Address", x => x.AddressId);
-                    table.ForeignKey(
-                        name: "FK_Address_AppUsers_AppUserId",
+                        name: "FK_AppUsers_Address_AppUserId",
                         column: x => x.AppUserId,
-                        principalTable: "AppUsers",
-                        principalColumn: "AppUserId");
+                        principalTable: "Address",
+                        principalColumn: "AddressId");
                 });
 
             migrationBuilder.CreateTable(
@@ -350,15 +340,46 @@ namespace DeliveryService.Server.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "Riders",
+                columns: table => new
+                {
+                    RiderId = table.Column<int>(nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    IsAccountActive = table.Column<bool>(nullable: false),
+                    IsAvailable = table.Column<bool>(nullable: false),
+                    CreatedAt = table.Column<DateTime>(nullable: false, defaultValueSql: "GETDATE()"),
+                    UpdatedAt = table.Column<DateTime>(nullable: true),
+                    AppUserId = table.Column<long>(nullable: true),
+                    RiderDetailsId = table.Column<int>(nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Riders", x => x.RiderId);
+                    table.ForeignKey(
+                        name: "FK_Riders_AppUsers_AppUserId",
+                        column: x => x.AppUserId,
+                        principalTable: "AppUsers",
+                        principalColumn: "AppUserId",
+                        onDelete: ReferentialAction.SetNull);
+                    table.ForeignKey(
+                        name: "FK_Riders_RiderDetails_RiderDetailsId",
+                        column: x => x.RiderDetailsId,
+                        principalTable: "RiderDetails",
+                        principalColumn: "RiderDetailsId",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Stores",
                 columns: table => new
                 {
                     StoreId = table.Column<long>(nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Name = table.Column<string>(nullable: false),
-                    Contact = table.Column<int>(nullable: false),
+                    Contact = table.Column<string>(maxLength: 20, nullable: false),
                     Commission = table.Column<decimal>(type: "decimal(10,2)", nullable: false),
                     DeliveryFee = table.Column<decimal>(type: "decimal(10,2)", nullable: false),
+                    IsActive = table.Column<bool>(nullable: false),
                     CreatedAt = table.Column<DateTime>(nullable: false, defaultValueSql: "GETDATE()"),
                     UpdatedAt = table.Column<DateTime>(nullable: true),
                     AppUserId = table.Column<long>(nullable: true),
@@ -571,13 +592,59 @@ namespace DeliveryService.Server.Migrations
                     { 1, "Admin for app", "Admin" },
                     { 2, "Customer making an order", "Customer" },
                     { 3, "Courier delivery", "Rider" },
-                    { 4, "Store user managing the store account", "Store" }
+                    { 4, "Store user managing the store account", "Store" },
+                    { 5, "Base account, no value or moral. No contribution to the community", "User" }
                 });
 
-            migrationBuilder.CreateIndex(
-                name: "IX_Address_AppUserId",
+            migrationBuilder.InsertData(
+                table: "Parishes",
+                columns: new[] { "ParishId", "Name" },
+                values: new object[,]
+                {
+                    { 14, "St. Catherine" },
+                    { 13, "Hanover" },
+                    { 12, "St. James" },
+                    { 11, "Westmoreland" },
+                    { 10, "Trelawny" },
+                    { 9, "St. Elizabeth" },
+                    { 8, "Manchester" },
+                    { 6, "Clarendon" },
+                    { 5, "St. Mary" },
+                    { 4, "St. Thomas" },
+                    { 3, "Portland" },
+                    { 2, "St. Andrew" },
+                    { 1, "Kingston" },
+                    { 7, "St. Ann" }
+                });
+
+            migrationBuilder.InsertData(
+                table: "ServiceTypes",
+                columns: new[] { "ServiceTypeId", "Description", "Name" },
+                values: new object[,]
+                {
+                    { 1, "Stores that offer food service", "Food" },
+                    { 2, "Stores that offer courier service", "Courier" }
+                });
+
+            migrationBuilder.InsertData(
                 table: "Address",
-                column: "AppUserId");
+                columns: new[] { "AddressId", "AddressLine1", "AddressLine2", "Country", "ParishId", "ZipCode" },
+                values: new object[] { 1L, "merrivale apartments", "13 merrivale close", "Jamaica", 1, 876 });
+
+            migrationBuilder.InsertData(
+                table: "AppUsers",
+                columns: new[] { "AppUserId", "AddressId", "BetaCode", "Biography", "Contact", "CreatedAt", "DateOfBirth", "DeletedAt", "Email", "FirstName", "HashedPassword", "IsActive", "LastName", "Nickname", "Photo", "Salt", "Sex", "UpdatedAt" },
+                values: new object[] { 1L, null, "gPOOLderZ", "Hi, i'm new", "18762782795", new DateTime(2020, 7, 27, 23, 4, 14, 157, DateTimeKind.Local).AddTicks(3636), new DateTime(1989, 11, 28, 0, 0, 0, 0, DateTimeKind.Unspecified), null, "nove1398@yahoo.com", "evon", "XohImNooBHFR0OVvjcYpJ3NgPQ1qq73WKhHvch0VQtg=", true, "franklin", "nove", null, "FUe6qfF48eRvxG6T5rctOVS5Av1nMJXBBQ2NzmenVfm5xIZD/e3QuPklALdTkw8ww/E=", 0, null });
+
+            migrationBuilder.InsertData(
+                table: "AppUserRoles",
+                columns: new[] { "AppRoleId", "AppUserId" },
+                values: new object[] { 1, 1L });
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Address_ParishId",
+                table: "Address",
+                column: "ParishId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_AppUserFavourites_FavouriteId",
@@ -598,13 +665,6 @@ namespace DeliveryService.Server.Migrations
                 name: "IX_AppUserRoles_AppUserId",
                 table: "AppUserRoles",
                 column: "AppUserId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_AppUsers_RiderId",
-                table: "AppUsers",
-                column: "RiderId",
-                unique: true,
-                filter: "[RiderId] IS NOT NULL");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Audits_AppUserId1",
@@ -658,9 +718,17 @@ namespace DeliveryService.Server.Migrations
                 column: "MenuItemId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Riiders_RiderDetailsId",
-                table: "Riiders",
-                column: "RiderDetailsId");
+                name: "IX_Riders_AppUserId",
+                table: "Riders",
+                column: "AppUserId",
+                unique: true,
+                filter: "[AppUserId] IS NOT NULL");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Riders_RiderDetailsId",
+                table: "Riders",
+                column: "RiderDetailsId",
+                unique: true);
 
             migrationBuilder.CreateIndex(
                 name: "IX_Stores_AddressId",
@@ -713,6 +781,9 @@ namespace DeliveryService.Server.Migrations
                 name: "PasswordResets");
 
             migrationBuilder.DropTable(
+                name: "Riders");
+
+            migrationBuilder.DropTable(
                 name: "Favourites");
 
             migrationBuilder.DropTable(
@@ -734,6 +805,9 @@ namespace DeliveryService.Server.Migrations
                 name: "Orders");
 
             migrationBuilder.DropTable(
+                name: "RiderDetails");
+
+            migrationBuilder.DropTable(
                 name: "MenuItems");
 
             migrationBuilder.DropTable(
@@ -743,19 +817,16 @@ namespace DeliveryService.Server.Migrations
                 name: "Stores");
 
             migrationBuilder.DropTable(
-                name: "Address");
+                name: "AppUsers");
 
             migrationBuilder.DropTable(
                 name: "ServiceTypes");
 
             migrationBuilder.DropTable(
-                name: "AppUsers");
+                name: "Address");
 
             migrationBuilder.DropTable(
-                name: "Riiders");
-
-            migrationBuilder.DropTable(
-                name: "RiderDetails");
+                name: "Parishes");
         }
     }
 }

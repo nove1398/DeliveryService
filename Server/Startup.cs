@@ -11,6 +11,7 @@ using DeliveryService.Server.Services;
 using DeliveryService.Server.Data;
 using DeliveryService.Shared.Models;
 
+
 namespace DeliveryService.Server
 {
     public class Startup
@@ -28,6 +29,7 @@ namespace DeliveryService.Server
         {
 
             services.AddControllersWithViews();
+              
             services.AddRazorPages();
             services.AddAuthorizationCore();
             services.AddOptions();
@@ -59,6 +61,9 @@ namespace DeliveryService.Server
             services.AddTransient<IUserService, UserService>();
             services.AddTransient<IStoreService, StoreService>();
             services.AddTransient<IRiderService, RiderService>();
+            services.AddTransient<IGeneralService, GeneralService>();
+      
+     
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

@@ -40,18 +40,22 @@ namespace DeliveryService.Shared.Models
 
         public DateTime? DateOfBirth { get; set; }
 
-        public DateTime CreatedAt { get; set; } = DateTime.Now;
+        public DateTime CreatedAt { get; set; }
 
         public DateTime? UpdatedAt { get; set; }
 
-        public int? RiderId { get; set; }
+        public DateTime? DeletedAt { get; set; }
+
         public virtual Rider Rider { get; set; }
 
         public Store Store { get; set; }
 
+        public long? AddressId { get; set; }
+        public Address Address { get; set; }
+
         public virtual ICollection<Review> Reviews { get; set; }
-        public virtual ICollection<Address> Addresses { get; set; }
         public virtual ICollection<AppUserRoles> AppUserRoles { get; set; }
+        public virtual ICollection<AppUserStore> AppUserStores { get; set; }
         public virtual ICollection<AppUserOrder> AppUserOrders { get; set; }
         public virtual ICollection<AppUserReview> AppUserReviews { get; set; }
         public virtual ICollection<AppUserFavourite> AppUserFavourites { get; set; }

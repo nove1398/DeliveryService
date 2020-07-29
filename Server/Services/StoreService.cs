@@ -1,5 +1,6 @@
 ﻿using DeliveryService.Server.Data;
 using DeliveryService.Shared.Models;
+using DeliveryService.Shared.ViewModels;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -10,10 +11,12 @@ namespace DeliveryService.Server.Services
 {
     public interface IStoreService
     {
-        Task<List<Store>> AllStoresAsync();
-        Task<List<Store>> AllActiveStoresAsync();
-        Task<List<Store>> AllInActiveStoresAsync();
-        Task<List<Store>> StoresByParishASync(string parish);
+        Task<List<StoreViewModel>> AllStoresAsync();
+        Task<List<StoreViewModel>> AllActiveStoresAsync();
+        Task<List<StoreViewModel>> AllInActiveStoresAsync();
+        Task<List<StoreViewModel>> StoresByParishASync(string parish);
+        Task<int> AddNewStore(Store newStore);
+        Task<Store> FindStore(int id);
     }
 
     public class StoreService : IStoreService
@@ -25,22 +28,47 @@ namespace DeliveryService.Server.Services
             _context = context;
         }
 
-        public async Task<List<Store>> AllActiveStoresAsync()
+        public async Task<int> AddNewStore(Store newStore)
         {
-            return await _context.Stores.AsNoTracking().Where(s => s.IsActive).OrderBy(s => s.Name).ToListAsync();
+            _context.Stores.Add(newStore);
+            return await _context.SaveChangesAsync();
         }
 
-        public Task<List<Store>> AllInActiveStoresAsync()
+        public async Task<List<StoreViewModel>> AllActiveStoresAsync()
+        {
+            return await _context.Stores.AsNoTracking()
+                .Where(s => s.IsActive)
+                .OrderBy(s => s.Name)
+                .Select(model => new StoreViewModel 
+                {
+                    StoreName = model.Name,
+                     Contact = model.Contact,
+                     Id = model.StoreId, 
+                    IsActive = model.IsActive, 
+                    OwnerNames = model.AppUserStores.Where(x => x.StoreId == model.StoreId ).Select(y => y.AppUser.GetFullName()).ToList(),
+                    ServiceType = model.ServiceType.Name
+                })
+                .ToListAsync();
+        }
+
+        public Task<List<StoreViewModel>> AllInActiveStoresAsync()
         {
             throw new NotImplementedException();
         }
 
-        public Task<List<Store>> AllStoresAsync()
+        public Task<List<StoreViewModel>> AllStoresAsync()
         {
             throw new NotImplementedException();
         }
 
-        public Task<List<Store>> StoresByParishASync(string parish)
+        public async Task<Store> FindStore(int id)
+        {
+            return await _context.Stores
+                 .Where(s => s.StoreId == id)
+                 .FirstOrDefaultAsync();
+        }
+
+        public Task<List<StoreViewModel>> StoresByParishASync(string parish)
         {
             throw new NotImplementedException();
         }

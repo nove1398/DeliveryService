@@ -12,7 +12,8 @@ namespace DeliveryService.Shared.Models
         [Required]
         public string Name { get; set; }
 
-        public int Contact { get; set; }
+        [Required]
+        public string Contact { get; set; }
 
         public decimal Commission { get; set; }
 
@@ -24,15 +25,14 @@ namespace DeliveryService.Shared.Models
 
         public DateTime? UpdatedAt { get; set; }
 
-        public long? AppUserId { get; set; }
-        public AppUser AppUser { get; set; }
-
         public long? AddressId { get; set; }
+        [ValidateComplexType]
         public Address Address { get; set; }
 
-        public ServiceType ServiceType { get; set; }
         public int? ServiceTypeId { get; set; }
+        public ServiceType ServiceType { get; set; }
 
         public virtual ICollection<MenuItem> MenuItems { get; set; }
+        public virtual ICollection<AppUserStore> AppUserStores { get; set; }
     }
 }

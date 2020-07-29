@@ -1,0 +1,74 @@
+﻿@page "/stores"
+@attribute [Authorize]
+@inject HttpHandler Http
+
+<h3>Manage Stores</h3>
+
+@if (isLoading)
+{
+    <p>Loading...</p>
+    return;
+}
+
+<a href="/addStore" class="mb-3 p-2">[ Add Store]</a>
+
+<table class="table table-striped col-sm-12 mt-3">
+    <thead>
+        <tr>
+            <td class="text-center">Name</td>
+            <td class="text-center">Owner</td>
+            <td class="text-center">Contact</td>
+            <td class="text-center">Active</td>
+            <td class="text-center">Service Type</td>
+            <td class="text-center">Actions</td>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var store in storeList)
+        {
+            <tr>
+                <td  class="text-center">@store.StoreName</td>
+                <td  class="text-center">
+                    @foreach (var name in store.OwnerNames)
+                    {
+                        <div class="badge badge-info">@name</div>
+                    }
+                </td>
+                <td  class="text-center">@store.Contact</td>
+                <td  class="text-center">@store.IsActive</td>
+                <td  class="text-center">@store.ServiceType</td>
+                <td  class="text-center">
+                    <a href="/editStore/@store.Id">[ Edit ]</a>
+                    <a href="#" @onclick:preventDefault>[ Deactivate ]</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+
+
+@code {
+    List<StoreViewModel> storeList = new List<StoreViewModel>();
+    bool isLoading = false;
+
+
+    protected override async Task OnInitializedAsync()
+    {
+        isLoading = true;
+        await FetchStores();
+        isLoading = false;
+    }
+
+    async Task FetchStores()
+    {
+        var response = await Http.GetJsonAsync<ResponseModel<List<StoreViewModel>>>("/api/stores");
+        if (response.IsSuccess)
+        {
+            storeList = response.Data;
+        }
+    }
+
+
+
+}

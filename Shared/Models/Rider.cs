@@ -21,6 +21,7 @@ namespace DeliveryService.Shared.Models
         public AppUser AppUser { get; set; }
 
         public int RiderDetailsId { get; set; }
+        [ValidateComplexType]
         public RiderDetails RiderDetails { get; set; }
 
     }

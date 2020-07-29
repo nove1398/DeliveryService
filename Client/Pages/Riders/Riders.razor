@@ -1,0 +1,151 @@
+﻿@page "/riders"
+@inject HttpHandler Http
+@attribute [Authorize]
+
+<h3>Manage Delivery Riders</h3>
+
+@if (isLoading)
+{
+    <p>Loading...</p>
+    return;
+}
+
+@if (!string.IsNullOrEmpty(statusMessage))
+{
+    <AlertComponent text="@statusMessage" />
+}
+
+@if (inAddMode)
+{
+    <EditForm Model="rider" OnValidSubmit="OnSubmitNewRider">
+        <ObjectGraphDataAnnotationsValidator />
+        <div class="form-group">
+            <label>Related User Account</label>
+            <InputSelectNumber @bind-Value="rider.AppUserId" class="form-control text-capitalize">
+                <option>Select the related account</option>
+                @foreach (var user in usersList)
+                    {
+                    <option value="@user.AppUserId.ToString()">@user.GetFullName()</option>
+                    }
+            </InputSelectNumber>
+            <ValidationMessage For="@(() => rider.AppUserId )" />
+            <p class="mt-1">Not found in this list? <button class="btn-sm btn-success">Add New</button></p>
+        </div>
+        <div class="form-group">
+            <label>Rider TRN</label>
+            <InputNumber @bind-Value="rider.TRN" class="form-control" />
+            <ValidationMessage For="@(() => rider.TRN )" />
+        </div>
+        <div class="form-group">
+            <label>Rider License Plate</label>
+            <InputText @bind-Value="rider.LicencePlate" class="form-control text-uppercase" />
+            <ValidationMessage For="@(() => rider.LicencePlate )" />
+        </div>
+        <div class="form-group">
+            <label>Rider Assigned Parish</label>
+            <InputSelect @bind-Value="rider.AssignedParish" class="form-control">
+                <option value="">Select Parish</option>
+                @foreach (var parish in Constants.Parishes)
+                    {
+                    <option value="@parish">@parish</option>
+                    }
+            </InputSelect>
+            <ValidationMessage For="@(() => rider.AssignedParish )" />
+        </div>
+        <div class="form-group">
+            <label>Rider Vehicle Type</label>
+            <InputSelect @bind-Value="rider.Vehicle" class="form-control">
+                <option selected value="">Select vehicle type</option>
+                <option value="@RiderDetails.VehicleType.Bicycle">@RiderDetails.VehicleType.Bicycle</option>
+                <option value="@RiderDetails.VehicleType.Bike">@RiderDetails.VehicleType.Bike</option>
+                <option value="@RiderDetails.VehicleType.Bus">@RiderDetails.VehicleType.Bus</option>
+                <option value="@RiderDetails.VehicleType.Car">@RiderDetails.VehicleType.Car</option>
+                <option value="@RiderDetails.VehicleType.Taxi">@RiderDetails.VehicleType.Taxi</option>
+            </InputSelect>
+            <ValidationMessage For="@(() => rider.Vehicle )" />
+        </div>
+        <div class="col-12">
+            <button type="submit" class="btn btn-primary">Submit</button>
+        </div>
+    </EditForm>
+}
+
+
+<div class="col-12 mt-2">
+    <button class="btn btn-secondary d-inline mr-2" @onclick="FetchRiders">Reload Rider List</button>
+    <button class="btn btn-secondary d-inline" @onclick="(async (e) => { await FetchUserList(); inAddMode = !inAddMode; })">Toggle Add New Rider</button>
+</div>
+
+@if (riderList != null && !inAddMode)
+{
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <td>Name</td>
+                <td>Email</td>
+                <td>Vehicle</td>
+                <td>Is Active</td>
+                <td>Assigned Parish</td>
+                <td></td>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var rider in riderList)
+            {
+                <tr>
+                    <td>@rider.GetFullName()</td>
+                    <td>@rider.Email</td>
+                    <td>@rider.Vehicle</td>
+                    <td><div class="badge @((!rider.IsAccountActive)?"badge-danger":"badge-success")" >@(rider.IsAccountActive?"Active":"Inactive")</div></td>
+                    <td>@rider.AssignedParish</td>
+                    <td><a href="/riders/@rider.Id?returnUrl=riders">[ Edit ]</a></td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+
+@code {
+    private RiderViewModel rider = new RiderViewModel();
+    private List<AppUser> usersList;
+    private List<RiderViewModel> riderList;
+    private bool isLoading = false;
+    private bool inAddMode = false;
+    private string statusMessage = "";
+
+
+
+    protected override async Task OnInitializedAsync()
+    {
+        var riders =  FetchRiders();
+        var users = FetchUserList();
+        await Task.WhenAll(riders, users);
+    }
+
+    private async Task OnSubmitNewRider()
+    {
+        isLoading = true;
+        var result = await Http.PostAsync<ResponseModel<RiderViewModel>>("/api/riders", rider);
+        if (result.IsSuccess)
+            statusMessage = result.Message;
+        isLoading = false;
+    }
+
+    private async Task FetchUserList()
+    {
+        isLoading = true;
+        var result = await Http.GetJsonAsync<ResponseModel<List<AppUser>>>("/api/appusers");
+        if (result.IsSuccess)
+            usersList = result.Data;
+        isLoading = false;
+    }
+
+    private async Task FetchRiders()
+    {
+        isLoading = true;
+        var response = await Http.GetJsonAsync<ResponseModel<List<RiderViewModel>>>("/api/riders");
+        riderList = response.Data;
+        inAddMode = false;
+        isLoading = false;
+    }
+}

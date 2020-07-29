@@ -15,7 +15,7 @@ namespace DeliveryService.Server.Migrations
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "3.1.5")
+                .HasAnnotation("ProductVersion", "3.1.6")
                 .HasAnnotation("Relational:MaxIdentifierLength", 128)
                 .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
@@ -84,23 +84,19 @@ namespace DeliveryService.Server.Migrations
                     b.Property<string>("AddressLine2")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<long?>("AppUserId")
-                        .HasColumnType("bigint");
-
                     b.Property<string>("Country")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("Parish")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<int>("ParishId")
+                        .HasColumnType("int");
 
                     b.Property<int>("ZipCode")
                         .HasColumnType("int");
 
                     b.HasKey("AddressId");
 
-                    b.HasIndex("AppUserId");
+                    b.HasIndex("ParishId");
 
                     b.ToTable("Address");
 
@@ -110,9 +106,8 @@ namespace DeliveryService.Server.Migrations
                             AddressId = 1L,
                             AddressLine1 = "merrivale apartments",
                             AddressLine2 = "13 merrivale close",
-                            AppUserId = 1L,
                             Country = "Jamaica",
-                            Parish = "Kingston",
+                            ParishId = 1,
                             ZipCode = 876
                         });
                 });
@@ -170,9 +165,10 @@ namespace DeliveryService.Server.Migrations
             modelBuilder.Entity("DeliveryService.Shared.Models.AppUser", b =>
                 {
                     b.Property<long>("AppUserId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+                        .HasColumnType("bigint");
+
+                    b.Property<long?>("AddressId")
+                        .HasColumnType("bigint");
 
                     b.Property<string>("BetaCode")
                         .HasColumnType("nvarchar(max)");
@@ -189,6 +185,9 @@ namespace DeliveryService.Server.Migrations
                         .HasDefaultValueSql("GETDATE()");
 
                     b.Property<DateTime?>("DateOfBirth")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime?>("DeletedAt")
                         .HasColumnType("datetime2");
 
                     b.Property<string>("Email")
@@ -213,23 +212,21 @@ namespace DeliveryService.Server.Migrations
                     b.Property<string>("Photo")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int?>("RiderId")
-                        .HasColumnType("int");
-
                     b.Property<string>("Salt")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<int>("Sex")
                         .HasColumnType("int");
 
+                    b.Property<long?>("StoreId")
+                        .HasColumnType("bigint");
+
                     b.Property<DateTime?>("UpdatedAt")
                         .HasColumnType("datetime2");
 
                     b.HasKey("AppUserId");
 
-                    b.HasIndex("RiderId")
-                        .IsUnique()
-                        .HasFilter("[RiderId] IS NOT NULL");
+                    b.HasIndex("StoreId");
 
                     b.ToTable("AppUsers");
 
@@ -240,7 +237,7 @@ namespace DeliveryService.Server.Migrations
                             BetaCode = "gPOOLderZ",
                             Biography = "Hi, i'm new",
                             Contact = "18762782795",
-                            CreatedAt = new DateTime(2020, 7, 18, 19, 31, 24, 197, DateTimeKind.Local).AddTicks(2234),
+                            CreatedAt = new DateTime(2020, 7, 27, 23, 22, 57, 728, DateTimeKind.Local).AddTicks(6474),
                             DateOfBirth = new DateTime(1989, 11, 28, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Email = "nove1398@yahoo.com",
                             FirstName = "evon",
@@ -248,7 +245,7 @@ namespace DeliveryService.Server.Migrations
                             IsActive = true,
                             LastName = "franklin",
                             Nickname = "nove",
-                            Salt = "5GGCTQUv34kXKZCl/WjxKMRLXf7LXDGTKIVnlaZvB7ZL+Ly8CqOIlF5DHnBSL+4/gdg=",
+                            Salt = "DZhZnQklYN9yIIlGezgVKeCyCxoptikBPHuEvvcKnoqPh0T4zkJTfufP66wDLdBtlUY=",
                             Sex = 0
                         });
                 });
@@ -318,6 +315,21 @@ namespace DeliveryService.Server.Migrations
                             AppRoleId = 1,
                             AppUserId = 1L
                         });
+                });
+
+            modelBuilder.Entity("DeliveryService.Shared.Models.AppUserStore", b =>
+                {
+                    b.Property<long>("AppUserId")
+                        .HasColumnType("bigint");
+
+                    b.Property<long>("StoreId")
+                        .HasColumnType("bigint");
+
+                    b.HasKey("AppUserId", "StoreId");
+
+                    b.HasIndex("StoreId");
+
+                    b.ToTable("AppUserStores");
                 });
 
             modelBuilder.Entity("DeliveryService.Shared.Models.Audit", b =>
@@ -478,6 +490,9 @@ namespace DeliveryService.Server.Migrations
                         .HasColumnType("datetime2")
                         .HasDefaultValueSql("GETDATE()");
 
+                    b.Property<DateTime?>("DeletedAt")
+                        .HasColumnType("datetime2");
+
                     b.Property<DateTime?>("DeliveredAt")
                         .HasColumnType("datetime2");
 
@@ -549,6 +564,93 @@ namespace DeliveryService.Server.Migrations
                     b.HasKey("OrderStatusId");
 
                     b.ToTable("OrderStatuses");
+                });
+
+            modelBuilder.Entity("DeliveryService.Shared.Models.Parish", b =>
+                {
+                    b.Property<int>("ParishId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<string>("Name")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("ParishId");
+
+                    b.ToTable("Parishes");
+
+                    b.HasData(
+                        new
+                        {
+                            ParishId = 1,
+                            Name = "Kingston"
+                        },
+                        new
+                        {
+                            ParishId = 2,
+                            Name = "St. Andrew"
+                        },
+                        new
+                        {
+                            ParishId = 3,
+                            Name = "Portland"
+                        },
+                        new
+                        {
+                            ParishId = 4,
+                            Name = "St. Thomas"
+                        },
+                        new
+                        {
+                            ParishId = 5,
+                            Name = "St. Mary"
+                        },
+                        new
+                        {
+                            ParishId = 6,
+                            Name = "Clarendon"
+                        },
+                        new
+                        {
+                            ParishId = 7,
+                            Name = "St. Ann"
+                        },
+                        new
+                        {
+                            ParishId = 8,
+                            Name = "Manchester"
+                        },
+                        new
+                        {
+                            ParishId = 9,
+                            Name = "St. Elizabeth"
+                        },
+                        new
+                        {
+                            ParishId = 10,
+                            Name = "Trelawny"
+                        },
+                        new
+                        {
+                            ParishId = 11,
+                            Name = "Westmoreland"
+                        },
+                        new
+                        {
+                            ParishId = 12,
+                            Name = "St. James"
+                        },
+                        new
+                        {
+                            ParishId = 13,
+                            Name = "Hanover"
+                        },
+                        new
+                        {
+                            ParishId = 14,
+                            Name = "St. Catherine"
+                        });
                 });
 
             modelBuilder.Entity("DeliveryService.Shared.Models.PasswordReset", b =>
@@ -634,10 +736,14 @@ namespace DeliveryService.Server.Migrations
 
                     b.HasKey("RiderId");
 
+                    b.HasIndex("AppUserId")
+                        .IsUnique()
+                        .HasFilter("[AppUserId] IS NOT NULL");
+
                     b.HasIndex("RiderDetailsId")
                         .IsUnique();
 
-                    b.ToTable("Riiders");
+                    b.ToTable("Riders");
                 });
 
             modelBuilder.Entity("DeliveryService.Shared.Models.RiderDetails", b =>
@@ -682,6 +788,20 @@ namespace DeliveryService.Server.Migrations
                     b.HasKey("ServiceTypeId");
 
                     b.ToTable("ServiceTypes");
+
+                    b.HasData(
+                        new
+                        {
+                            ServiceTypeId = 1,
+                            Description = "Stores that offer food service",
+                            Name = "Food"
+                        },
+                        new
+                        {
+                            ServiceTypeId = 2,
+                            Description = "Stores that offer courier service",
+                            Name = "Courier"
+                        });
                 });
 
             modelBuilder.Entity("DeliveryService.Shared.Models.Store", b =>
@@ -695,14 +815,13 @@ namespace DeliveryService.Server.Migrations
                         .IsRequired()
                         .HasColumnType("bigint");
 
-                    b.Property<long?>("AppUserId")
-                        .HasColumnType("bigint");
-
                     b.Property<decimal>("Commission")
                         .HasColumnType("decimal(10,2)");
 
-                    b.Property<int>("Contact")
-                        .HasColumnType("int");
+                    b.Property<string>("Contact")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(20)")
+                        .HasMaxLength(20);
 
                     b.Property<DateTime>("CreatedAt")
                         .ValueGeneratedOnAdd()
@@ -729,10 +848,6 @@ namespace DeliveryService.Server.Migrations
 
                     b.HasIndex("AddressId");
 
-                    b.HasIndex("AppUserId")
-                        .IsUnique()
-                        .HasFilter("[AppUserId] IS NOT NULL");
-
                     b.HasIndex("ServiceTypeId");
 
                     b.ToTable("Stores");
@@ -756,18 +871,24 @@ namespace DeliveryService.Server.Migrations
 
             modelBuilder.Entity("DeliveryService.Shared.Models.Address", b =>
                 {
-                    b.HasOne("DeliveryService.Shared.Models.AppUser", "AppUser")
+                    b.HasOne("DeliveryService.Shared.Models.Parish", "Parish")
                         .WithMany("Addresses")
-                        .HasForeignKey("AppUserId")
-                        .OnDelete(DeleteBehavior.NoAction);
+                        .HasForeignKey("ParishId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("DeliveryService.Shared.Models.AppUser", b =>
                 {
-                    b.HasOne("DeliveryService.Shared.Models.Rider", "Rider")
-                        .WithOne("AppUser")
-                        .HasForeignKey("DeliveryService.Shared.Models.AppUser", "RiderId")
-                        .OnDelete(DeleteBehavior.SetNull);
+                    b.HasOne("DeliveryService.Shared.Models.Address", "Address")
+                        .WithMany("AppUsers")
+                        .HasForeignKey("AppUserId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.HasOne("DeliveryService.Shared.Models.Store", "Store")
+                        .WithMany()
+                        .HasForeignKey("StoreId");
                 });
 
             modelBuilder.Entity("DeliveryService.Shared.Models.AppUserFavourite", b =>
@@ -826,6 +947,21 @@ namespace DeliveryService.Server.Migrations
                     b.HasOne("DeliveryService.Shared.Models.AppUser", "AppUser")
                         .WithMany("AppUserRoles")
                         .HasForeignKey("AppUserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("DeliveryService.Shared.Models.AppUserStore", b =>
+                {
+                    b.HasOne("DeliveryService.Shared.Models.AppUser", "AppUser")
+                        .WithMany("AppUserStores")
+                        .HasForeignKey("AppUserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("DeliveryService.Shared.Models.Store", "Store")
+                        .WithMany("AppUserStores")
+                        .HasForeignKey("StoreId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });
@@ -936,10 +1072,15 @@ namespace DeliveryService.Server.Migrations
 
             modelBuilder.Entity("DeliveryService.Shared.Models.Rider", b =>
                 {
+                    b.HasOne("DeliveryService.Shared.Models.AppUser", "AppUser")
+                        .WithOne("Rider")
+                        .HasForeignKey("DeliveryService.Shared.Models.Rider", "AppUserId")
+                        .OnDelete(DeleteBehavior.SetNull);
+
                     b.HasOne("DeliveryService.Shared.Models.RiderDetails", "RiderDetails")
                         .WithOne("Rider")
                         .HasForeignKey("DeliveryService.Shared.Models.Rider", "RiderDetailsId")
-                        .IsRequired();
+                        .OnDelete(DeleteBehavior.Cascade);
                 });
 
             modelBuilder.Entity("DeliveryService.Shared.Models.Store", b =>
@@ -948,10 +1089,6 @@ namespace DeliveryService.Server.Migrations
                         .WithMany("Stores")
                         .HasForeignKey("AddressId")
                         .IsRequired();
-
-                    b.HasOne("DeliveryService.Shared.Models.AppUser", "AppUser")
-                        .WithOne("Store")
-                        .HasForeignKey("DeliveryService.Shared.Models.Store", "AppUserId");
 
                     b.HasOne("DeliveryService.Shared.Models.ServiceType", "ServiceType")
                         .WithMany("Stores")

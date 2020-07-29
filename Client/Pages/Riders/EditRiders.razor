@@ -1,0 +1,103 @@
+﻿@page "/riders/{id:int}"
+@inject NavigationManager NavigationManager
+@inject HttpHandler Http
+
+
+<h3>Edit Rider</h3>
+
+@if (isLoading)
+{
+    <p>Loading...</p>
+    return;
+}
+
+@if (rider != null)
+{
+    <EditForm Model="rider" OnValidSubmit="OnSubmit">
+        <ObjectGraphDataAnnotationsValidator />
+        <div class="form-group">
+            <label>Related User Account</label>
+            <InputSelectNumber @bind-Value="rider.AppUserId" class="form-control text-capitalize">
+                <option>Select the related account</option>
+                @foreach (var user in usersList)
+                    {
+                    <option value="@user.AppUserId.ToString()">@user.GetFullName()</option>
+                    }
+            </InputSelectNumber>
+            <ValidationMessage For="@(() => rider.AppUserId )" />
+            <p class="mt-1">Not found in this list? <button class="btn-sm btn-success">Add New</button></p>
+        </div>
+        <div class="form-group">
+            <label>Rider TRN</label>
+            <InputNumber @bind-Value="rider.TRN" class="form-control" />
+            <ValidationMessage For="@(() => rider.TRN )" />
+        </div>
+        <div class="form-group">
+            <label>Rider License Plate</label>
+            <InputText @bind-Value="rider.LicencePlate" class="form-control text-uppercase" />
+            <ValidationMessage For="@(() => rider.LicencePlate )" />
+        </div>
+        <div class="form-group">
+            <label>Rider Assigned Parish</label>
+            <InputSelect @bind-Value="rider.AssignedParish" class="form-control">
+                <option value="">Select Parish</option>
+                @foreach (var parish in Constants.Parishes)
+                    {
+                    <option value="@parish">@parish</option>
+                    }
+            </InputSelect>
+            <ValidationMessage For="@(() => rider.AssignedParish )" />
+        </div>
+        <div class="form-group">
+            <label>Rider Vehicle Type</label>
+            <InputSelect @bind-Value="rider.Vehicle" class="form-control">
+                <option selected value="">Select vehicle type</option>
+                <option value="@RiderDetails.VehicleType.Bicycle">@RiderDetails.VehicleType.Bicycle</option>
+                <option value="@RiderDetails.VehicleType.Bike">@RiderDetails.VehicleType.Bike</option>
+                <option value="@RiderDetails.VehicleType.Bus">@RiderDetails.VehicleType.Bus</option>
+                <option value="@RiderDetails.VehicleType.Car">@RiderDetails.VehicleType.Car</option>
+                <option value="@RiderDetails.VehicleType.Taxi">@RiderDetails.VehicleType.Taxi</option>
+            </InputSelect>
+            <ValidationMessage For="@(() => rider.Vehicle )" />
+        </div>
+        <div class="col-12">
+            <button class="btn btn-primary mr-2" @onclick="@(()=> { NavigationManager.NavigateTo($"/{returnUrl}"); })" @onclick:preventDefault>Back</button>
+            <button type="submit" class="btn btn-primary">Submit</button>
+        </div>
+    </EditForm>
+}
+
+@code {
+    private List<AppUser> usersList;
+    private RiderViewModel rider;
+    private bool isLoading = false;
+    public string returnUrl { get; set; }
+
+    [Parameter]
+    public int id { get; set; }
+
+
+
+    protected override async Task OnInitializedAsync()
+    {
+        isLoading = true;
+        var usersTask = Http.GetJsonAsync<ResponseModel<List<AppUser>>>("/api/appusers");
+        var riderTask = Http.GetJsonAsync<ResponseModel<RiderViewModel>>($"/api/riders/{id}");
+        await Task.WhenAll(usersTask, riderTask);
+
+        if (usersTask.Result.IsSuccess && riderTask.Result.IsSuccess)
+        {
+
+            usersList = usersTask.Result.Data;
+            rider = riderTask.Result.Data;
+        }
+        returnUrl = QueryHelpers.ParseQuery(NavigationManager.Uri).Values.FirstOrDefault();
+        isLoading = false;
+
+    }
+
+    private async Task OnSubmit()
+    {
+        await Http.PutAsync<ResponseModel<RiderViewModel>>($"/api/riders", rider);
+    }
+}
