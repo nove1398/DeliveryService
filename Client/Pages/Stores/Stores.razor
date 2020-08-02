@@ -29,14 +29,14 @@
             <tr>
                 <td  class="text-center">@store.StoreName</td>
                 <td  class="text-center">
-                    @foreach (var name in store.OwnerNames)
+                    @foreach (var name in store.CurrentOwners)
                     {
-                        <div class="badge badge-info">@name</div>
+                        <div class="badge badge-info">@name.Name</div>
                     }
                 </td>
                 <td  class="text-center">@store.Contact</td>
                 <td  class="text-center">@store.IsActive</td>
-                <td  class="text-center">@store.ServiceType</td>
+                <td  class="text-center">@store.ServiceType.Name</td>
                 <td  class="text-center">
                     <a href="/editStore/@store.Id">[ Edit ]</a>
                     <a href="#" @onclick:preventDefault>[ Deactivate ]</a>

@@ -13,6 +13,7 @@ namespace DeliveryService.Server.Data
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
+            
             // JOINS M > - - - - < M
             var role = new AppUserRoles { AppRoleId = 1, AppUserId = 1 };
             builder.Entity<AppUserRoles>(entity =>
@@ -74,31 +75,36 @@ namespace DeliveryService.Server.Data
             //AppUser
             var hasher = new PasswordHasher();
             var creds = hasher.HashPassword("password");
-            var user = new AppUser();
-            user.Sex = AppUser.Gender.Male;
-            user.FirstName = "evon";
-            user.LastName = "franklin";
-            user.IsActive = true;
-            user.BetaCode = "gPOOLderZ";
-            user.Biography = "Hi, i'm new";
-            user.Contact = "18762782795";
-            user.CreatedAt = DateTime.Now;
-            user.Email = "nove1398@yahoo.com";
-            user.DateOfBirth = new DateTime(1989, 11, 28);
-            user.Nickname = "nove";
-            user.Salt = creds.Salt;
-            user.HashedPassword = creds.Password;
-
+            
+            List<AppUser> users = new List<AppUser>();
+            for(int i = 1;i< 50; i++)
+            {
+                var user = new AppUser();
+                user.FirstName = "evon"+i;
+                user.LastName = "franklin"+i;
+                user.IsActive = true;
+                user.BetaCode = "gPOOLderZ";
+                user.Biography = "Hi, i'm new";
+                user.Contact = "18762782795";
+                user.CreatedAt = DateTime.UtcNow;
+                user.Email = "nove1398@yahoo.com";
+                user.DateOfBirth = new DateTime(1989, 11, 28);
+                user.Salt = creds.Salt;
+                user.HashedPassword = creds.Password;
+                user.Sex = i % 2 == 0 ? AppUser.Gender.Female : AppUser.Gender.Male;
+                user.Nickname += i;
+                user.AppUserId = i++;
+                users.Add(user);
+            }
             builder.Entity<AppUser>(entity =>
             {
-                entity.HasData(user);
+                entity.HasData(users);
                 entity.Property(au => au.AppUserId).UseIdentityColumn(1,1);
                 entity.Property(a => a.CreatedAt).HasDefaultValueSql("GETDATE()");
                 entity.Property(a => a.UpdatedAt).IsRequired(false);
                 entity.Property(a => a.DateOfBirth).IsRequired(false);
                 
-                entity.HasMany(au => au.Reviews).WithOne(r => r.AppUser).HasForeignKey(r => r.AppUserId).OnDelete(DeleteBehavior.NoAction);
-                entity.HasOne(au => au.Address).WithMany(a => a.AppUsers).HasForeignKey(a => a.AppUserId).OnDelete(DeleteBehavior.NoAction);
+                entity.HasOne(au => au.Address).WithMany(a => a.AppUsers).HasForeignKey(a => a.AddressId).IsRequired(false).OnDelete(DeleteBehavior.NoAction);
                 entity.HasMany(au => au.Reviews).WithOne(a => a.AppUser).HasForeignKey(a => a.AppUserId).OnDelete(DeleteBehavior.NoAction);
 
             });
@@ -123,7 +129,11 @@ namespace DeliveryService.Server.Data
                 entity.Property(c => c.CreatedAt).HasDefaultValueSql("GETDATE()");
                 entity.Property(c => c.UpdatedAt).IsRequired(false);
 
-                entity.HasOne(c => c.AppUser).WithOne().HasForeignKey<Cart>(c => c.AppUserId).IsRequired(false).OnDelete(DeleteBehavior.ClientSetNull);
+                entity.HasOne(c => c.AppUser)
+                        .WithOne()
+                        .HasForeignKey<Cart>(c => c.AppUserId)
+                        .IsRequired(false)
+                        .OnDelete(DeleteBehavior.ClientSetNull);
             });
 
             // Roles

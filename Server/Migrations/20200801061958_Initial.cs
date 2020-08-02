@@ -194,7 +194,8 @@ namespace DeliveryService.Server.Migrations
                 name: "AppUsers",
                 columns: table => new
                 {
-                    AppUserId = table.Column<long>(nullable: false),
+                    AppUserId = table.Column<long>(nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
                     FirstName = table.Column<string>(nullable: true),
                     LastName = table.Column<string>(nullable: true),
                     Email = table.Column<string>(nullable: false),
@@ -217,10 +218,44 @@ namespace DeliveryService.Server.Migrations
                 {
                     table.PrimaryKey("PK_AppUsers", x => x.AppUserId);
                     table.ForeignKey(
-                        name: "FK_AppUsers_Address_AppUserId",
-                        column: x => x.AppUserId,
+                        name: "FK_AppUsers_Address_AddressId",
+                        column: x => x.AddressId,
                         principalTable: "Address",
                         principalColumn: "AddressId");
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Stores",
+                columns: table => new
+                {
+                    StoreId = table.Column<long>(nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Name = table.Column<string>(nullable: false),
+                    Contact = table.Column<string>(maxLength: 20, nullable: false),
+                    Commission = table.Column<decimal>(type: "decimal(10,2)", nullable: false),
+                    DeliveryFee = table.Column<decimal>(type: "decimal(10,2)", nullable: false),
+                    IsActive = table.Column<bool>(nullable: false),
+                    CreatedAt = table.Column<DateTime>(nullable: false, defaultValueSql: "GETDATE()"),
+                    UpdatedAt = table.Column<DateTime>(nullable: true),
+                    DeletedAt = table.Column<DateTime>(nullable: true),
+                    AddressId = table.Column<long>(nullable: false),
+                    ServiceTypeId = table.Column<int>(nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Stores", x => x.StoreId);
+                    table.ForeignKey(
+                        name: "FK_Stores_Address_AddressId",
+                        column: x => x.AddressId,
+                        principalTable: "Address",
+                        principalColumn: "AddressId",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_Stores_ServiceTypes_ServiceTypeId",
+                        column: x => x.ServiceTypeId,
+                        principalTable: "ServiceTypes",
+                        principalColumn: "ServiceTypeId",
+                        onDelete: ReferentialAction.SetNull);
                 });
 
             migrationBuilder.CreateTable(
@@ -370,43 +405,27 @@ namespace DeliveryService.Server.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Stores",
+                name: "AppUserStores",
                 columns: table => new
                 {
+                    AppUserId = table.Column<long>(nullable: false),
                     StoreId = table.Column<long>(nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    Name = table.Column<string>(nullable: false),
-                    Contact = table.Column<string>(maxLength: 20, nullable: false),
-                    Commission = table.Column<decimal>(type: "decimal(10,2)", nullable: false),
-                    DeliveryFee = table.Column<decimal>(type: "decimal(10,2)", nullable: false),
-                    IsActive = table.Column<bool>(nullable: false),
-                    CreatedAt = table.Column<DateTime>(nullable: false, defaultValueSql: "GETDATE()"),
-                    UpdatedAt = table.Column<DateTime>(nullable: true),
-                    AppUserId = table.Column<long>(nullable: true),
-                    AddressId = table.Column<long>(nullable: false),
-                    ServiceTypeId = table.Column<int>(nullable: true)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Stores", x => x.StoreId);
+                    table.PrimaryKey("PK_AppUserStores", x => new { x.AppUserId, x.StoreId });
                     table.ForeignKey(
-                        name: "FK_Stores_Address_AddressId",
-                        column: x => x.AddressId,
-                        principalTable: "Address",
-                        principalColumn: "AddressId",
-                        onDelete: ReferentialAction.Restrict);
-                    table.ForeignKey(
-                        name: "FK_Stores_AppUsers_AppUserId",
+                        name: "FK_AppUserStores_AppUsers_AppUserId",
                         column: x => x.AppUserId,
                         principalTable: "AppUsers",
                         principalColumn: "AppUserId",
-                        onDelete: ReferentialAction.Restrict);
+                        onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_Stores_ServiceTypes_ServiceTypeId",
-                        column: x => x.ServiceTypeId,
-                        principalTable: "ServiceTypes",
-                        principalColumn: "ServiceTypeId",
-                        onDelete: ReferentialAction.SetNull);
+                        name: "FK_AppUserStores_Stores_StoreId",
+                        column: x => x.StoreId,
+                        principalTable: "Stores",
+                        principalColumn: "StoreId",
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -416,6 +435,7 @@ namespace DeliveryService.Server.Migrations
                     MenuItemId = table.Column<int>(nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     CreatedAt = table.Column<DateTime>(nullable: false, defaultValueSql: "GETDATE()"),
+                    DeletedAt = table.Column<DateTime>(nullable: true),
                     Name = table.Column<string>(nullable: false),
                     Description = table.Column<string>(nullable: true),
                     Price = table.Column<decimal>(type: "decimal(10,2)", nullable: false),
@@ -539,6 +559,7 @@ namespace DeliveryService.Server.Migrations
                     ReviewId = table.Column<int>(nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     CreatedAt = table.Column<DateTime>(nullable: false, defaultValueSql: "GETDATE()"),
+                    DeletedAt = table.Column<DateTime>(nullable: true),
                     Details = table.Column<string>(maxLength: 600, nullable: true),
                     Rating = table.Column<int>(nullable: false),
                     AppUserId = table.Column<long>(nullable: false),
@@ -597,22 +618,54 @@ namespace DeliveryService.Server.Migrations
                 });
 
             migrationBuilder.InsertData(
+                table: "AppUsers",
+                columns: new[] { "AppUserId", "AddressId", "BetaCode", "Biography", "Contact", "CreatedAt", "DateOfBirth", "DeletedAt", "Email", "FirstName", "HashedPassword", "IsActive", "LastName", "Nickname", "Photo", "Salt", "Sex", "UpdatedAt" },
+                values: new object[,]
+                {
+                    { 29L, null, "gPOOLderZ", "Hi, i'm new", "18762782795", new DateTime(2020, 8, 1, 6, 19, 57, 843, DateTimeKind.Utc).AddTicks(5615), new DateTime(1989, 11, 28, 0, 0, 0, 0, DateTimeKind.Unspecified), null, "nove1398@yahoo.com", "evon", "XohImNooBHFR0OVvjcYpJ3NgPQ1qq73WKhHvch0VQtg=", true, "franklin", "29", null, "CIErpHFa53Bkuf2HlqeMXOB9qhAe5T8qQJPKtuMsA1FrX570WW7dObzArb5y4vKCVms=", 0, null },
+                    { 31L, null, "gPOOLderZ", "Hi, i'm new", "18762782795", new DateTime(2020, 8, 1, 6, 19, 57, 843, DateTimeKind.Utc).AddTicks(5615), new DateTime(1989, 11, 28, 0, 0, 0, 0, DateTimeKind.Unspecified), null, "nove1398@yahoo.com", "evon", "XohImNooBHFR0OVvjcYpJ3NgPQ1qq73WKhHvch0VQtg=", true, "franklin", "31", null, "CIErpHFa53Bkuf2HlqeMXOB9qhAe5T8qQJPKtuMsA1FrX570WW7dObzArb5y4vKCVms=", 0, null },
+                    { 33L, null, "gPOOLderZ", "Hi, i'm new", "18762782795", new DateTime(2020, 8, 1, 6, 19, 57, 843, DateTimeKind.Utc).AddTicks(5618), new DateTime(1989, 11, 28, 0, 0, 0, 0, DateTimeKind.Unspecified), null, "nove1398@yahoo.com", "evon", "XohImNooBHFR0OVvjcYpJ3NgPQ1qq73WKhHvch0VQtg=", true, "franklin", "33", null, "CIErpHFa53Bkuf2HlqeMXOB9qhAe5T8qQJPKtuMsA1FrX570WW7dObzArb5y4vKCVms=", 0, null },
+                    { 37L, null, "gPOOLderZ", "Hi, i'm new", "18762782795", new DateTime(2020, 8, 1, 6, 19, 57, 843, DateTimeKind.Utc).AddTicks(5621), new DateTime(1989, 11, 28, 0, 0, 0, 0, DateTimeKind.Unspecified), null, "nove1398@yahoo.com", "evon", "XohImNooBHFR0OVvjcYpJ3NgPQ1qq73WKhHvch0VQtg=", true, "franklin", "37", null, "CIErpHFa53Bkuf2HlqeMXOB9qhAe5T8qQJPKtuMsA1FrX570WW7dObzArb5y4vKCVms=", 0, null },
+                    { 39L, null, "gPOOLderZ", "Hi, i'm new", "18762782795", new DateTime(2020, 8, 1, 6, 19, 57, 843, DateTimeKind.Utc).AddTicks(5624), new DateTime(1989, 11, 28, 0, 0, 0, 0, DateTimeKind.Unspecified), null, "nove1398@yahoo.com", "evon", "XohImNooBHFR0OVvjcYpJ3NgPQ1qq73WKhHvch0VQtg=", true, "franklin", "39", null, "CIErpHFa53Bkuf2HlqeMXOB9qhAe5T8qQJPKtuMsA1FrX570WW7dObzArb5y4vKCVms=", 0, null },
+                    { 43L, null, "gPOOLderZ", "Hi, i'm new", "18762782795", new DateTime(2020, 8, 1, 6, 19, 57, 843, DateTimeKind.Utc).AddTicks(5624), new DateTime(1989, 11, 28, 0, 0, 0, 0, DateTimeKind.Unspecified), null, "nove1398@yahoo.com", "evon", "XohImNooBHFR0OVvjcYpJ3NgPQ1qq73WKhHvch0VQtg=", true, "franklin", "43", null, "CIErpHFa53Bkuf2HlqeMXOB9qhAe5T8qQJPKtuMsA1FrX570WW7dObzArb5y4vKCVms=", 0, null },
+                    { 27L, null, "gPOOLderZ", "Hi, i'm new", "18762782795", new DateTime(2020, 8, 1, 6, 19, 57, 843, DateTimeKind.Utc).AddTicks(5612), new DateTime(1989, 11, 28, 0, 0, 0, 0, DateTimeKind.Unspecified), null, "nove1398@yahoo.com", "evon", "XohImNooBHFR0OVvjcYpJ3NgPQ1qq73WKhHvch0VQtg=", true, "franklin", "27", null, "CIErpHFa53Bkuf2HlqeMXOB9qhAe5T8qQJPKtuMsA1FrX570WW7dObzArb5y4vKCVms=", 0, null },
+                    { 45L, null, "gPOOLderZ", "Hi, i'm new", "18762782795", new DateTime(2020, 8, 1, 6, 19, 57, 843, DateTimeKind.Utc).AddTicks(5627), new DateTime(1989, 11, 28, 0, 0, 0, 0, DateTimeKind.Unspecified), null, "nove1398@yahoo.com", "evon", "XohImNooBHFR0OVvjcYpJ3NgPQ1qq73WKhHvch0VQtg=", true, "franklin", "45", null, "CIErpHFa53Bkuf2HlqeMXOB9qhAe5T8qQJPKtuMsA1FrX570WW7dObzArb5y4vKCVms=", 0, null },
+                    { 47L, null, "gPOOLderZ", "Hi, i'm new", "18762782795", new DateTime(2020, 8, 1, 6, 19, 57, 843, DateTimeKind.Utc).AddTicks(5627), new DateTime(1989, 11, 28, 0, 0, 0, 0, DateTimeKind.Unspecified), null, "nove1398@yahoo.com", "evon", "XohImNooBHFR0OVvjcYpJ3NgPQ1qq73WKhHvch0VQtg=", true, "franklin", "47", null, "CIErpHFa53Bkuf2HlqeMXOB9qhAe5T8qQJPKtuMsA1FrX570WW7dObzArb5y4vKCVms=", 0, null },
+                    { 49L, null, "gPOOLderZ", "Hi, i'm new", "18762782795", new DateTime(2020, 8, 1, 6, 19, 57, 843, DateTimeKind.Utc).AddTicks(5630), new DateTime(1989, 11, 28, 0, 0, 0, 0, DateTimeKind.Unspecified), null, "nove1398@yahoo.com", "evon", "XohImNooBHFR0OVvjcYpJ3NgPQ1qq73WKhHvch0VQtg=", true, "franklin", "49", null, "CIErpHFa53Bkuf2HlqeMXOB9qhAe5T8qQJPKtuMsA1FrX570WW7dObzArb5y4vKCVms=", 0, null },
+                    { 41L, null, "gPOOLderZ", "Hi, i'm new", "18762782795", new DateTime(2020, 8, 1, 6, 19, 57, 843, DateTimeKind.Utc).AddTicks(5624), new DateTime(1989, 11, 28, 0, 0, 0, 0, DateTimeKind.Unspecified), null, "nove1398@yahoo.com", "evon", "XohImNooBHFR0OVvjcYpJ3NgPQ1qq73WKhHvch0VQtg=", true, "franklin", "41", null, "CIErpHFa53Bkuf2HlqeMXOB9qhAe5T8qQJPKtuMsA1FrX570WW7dObzArb5y4vKCVms=", 0, null },
+                    { 25L, null, "gPOOLderZ", "Hi, i'm new", "18762782795", new DateTime(2020, 8, 1, 6, 19, 57, 843, DateTimeKind.Utc).AddTicks(5612), new DateTime(1989, 11, 28, 0, 0, 0, 0, DateTimeKind.Unspecified), null, "nove1398@yahoo.com", "evon", "XohImNooBHFR0OVvjcYpJ3NgPQ1qq73WKhHvch0VQtg=", true, "franklin", "25", null, "CIErpHFa53Bkuf2HlqeMXOB9qhAe5T8qQJPKtuMsA1FrX570WW7dObzArb5y4vKCVms=", 0, null },
+                    { 35L, null, "gPOOLderZ", "Hi, i'm new", "18762782795", new DateTime(2020, 8, 1, 6, 19, 57, 843, DateTimeKind.Utc).AddTicks(5621), new DateTime(1989, 11, 28, 0, 0, 0, 0, DateTimeKind.Unspecified), null, "nove1398@yahoo.com", "evon", "XohImNooBHFR0OVvjcYpJ3NgPQ1qq73WKhHvch0VQtg=", true, "franklin", "35", null, "CIErpHFa53Bkuf2HlqeMXOB9qhAe5T8qQJPKtuMsA1FrX570WW7dObzArb5y4vKCVms=", 0, null },
+                    { 21L, null, "gPOOLderZ", "Hi, i'm new", "18762782795", new DateTime(2020, 8, 1, 6, 19, 57, 843, DateTimeKind.Utc).AddTicks(5609), new DateTime(1989, 11, 28, 0, 0, 0, 0, DateTimeKind.Unspecified), null, "nove1398@yahoo.com", "evon", "XohImNooBHFR0OVvjcYpJ3NgPQ1qq73WKhHvch0VQtg=", true, "franklin", "21", null, "CIErpHFa53Bkuf2HlqeMXOB9qhAe5T8qQJPKtuMsA1FrX570WW7dObzArb5y4vKCVms=", 0, null },
+                    { 23L, null, "gPOOLderZ", "Hi, i'm new", "18762782795", new DateTime(2020, 8, 1, 6, 19, 57, 843, DateTimeKind.Utc).AddTicks(5609), new DateTime(1989, 11, 28, 0, 0, 0, 0, DateTimeKind.Unspecified), null, "nove1398@yahoo.com", "evon", "XohImNooBHFR0OVvjcYpJ3NgPQ1qq73WKhHvch0VQtg=", true, "franklin", "23", null, "CIErpHFa53Bkuf2HlqeMXOB9qhAe5T8qQJPKtuMsA1FrX570WW7dObzArb5y4vKCVms=", 0, null },
+                    { 1L, null, "gPOOLderZ", "Hi, i'm new", "18762782795", new DateTime(2020, 8, 1, 6, 19, 57, 843, DateTimeKind.Utc).AddTicks(519), new DateTime(1989, 11, 28, 0, 0, 0, 0, DateTimeKind.Unspecified), null, "nove1398@yahoo.com", "evon", "XohImNooBHFR0OVvjcYpJ3NgPQ1qq73WKhHvch0VQtg=", true, "franklin", "1", null, "CIErpHFa53Bkuf2HlqeMXOB9qhAe5T8qQJPKtuMsA1FrX570WW7dObzArb5y4vKCVms=", 0, null },
+                    { 3L, null, "gPOOLderZ", "Hi, i'm new", "18762782795", new DateTime(2020, 8, 1, 6, 19, 57, 843, DateTimeKind.Utc).AddTicks(5507), new DateTime(1989, 11, 28, 0, 0, 0, 0, DateTimeKind.Unspecified), null, "nove1398@yahoo.com", "evon", "XohImNooBHFR0OVvjcYpJ3NgPQ1qq73WKhHvch0VQtg=", true, "franklin", "3", null, "CIErpHFa53Bkuf2HlqeMXOB9qhAe5T8qQJPKtuMsA1FrX570WW7dObzArb5y4vKCVms=", 0, null },
+                    { 7L, null, "gPOOLderZ", "Hi, i'm new", "18762782795", new DateTime(2020, 8, 1, 6, 19, 57, 843, DateTimeKind.Utc).AddTicks(5591), new DateTime(1989, 11, 28, 0, 0, 0, 0, DateTimeKind.Unspecified), null, "nove1398@yahoo.com", "evon", "XohImNooBHFR0OVvjcYpJ3NgPQ1qq73WKhHvch0VQtg=", true, "franklin", "7", null, "CIErpHFa53Bkuf2HlqeMXOB9qhAe5T8qQJPKtuMsA1FrX570WW7dObzArb5y4vKCVms=", 0, null },
+                    { 9L, null, "gPOOLderZ", "Hi, i'm new", "18762782795", new DateTime(2020, 8, 1, 6, 19, 57, 843, DateTimeKind.Utc).AddTicks(5594), new DateTime(1989, 11, 28, 0, 0, 0, 0, DateTimeKind.Unspecified), null, "nove1398@yahoo.com", "evon", "XohImNooBHFR0OVvjcYpJ3NgPQ1qq73WKhHvch0VQtg=", true, "franklin", "9", null, "CIErpHFa53Bkuf2HlqeMXOB9qhAe5T8qQJPKtuMsA1FrX570WW7dObzArb5y4vKCVms=", 0, null },
+                    { 5L, null, "gPOOLderZ", "Hi, i'm new", "18762782795", new DateTime(2020, 8, 1, 6, 19, 57, 843, DateTimeKind.Utc).AddTicks(5588), new DateTime(1989, 11, 28, 0, 0, 0, 0, DateTimeKind.Unspecified), null, "nove1398@yahoo.com", "evon", "XohImNooBHFR0OVvjcYpJ3NgPQ1qq73WKhHvch0VQtg=", true, "franklin", "5", null, "CIErpHFa53Bkuf2HlqeMXOB9qhAe5T8qQJPKtuMsA1FrX570WW7dObzArb5y4vKCVms=", 0, null },
+                    { 13L, null, "gPOOLderZ", "Hi, i'm new", "18762782795", new DateTime(2020, 8, 1, 6, 19, 57, 843, DateTimeKind.Utc).AddTicks(5600), new DateTime(1989, 11, 28, 0, 0, 0, 0, DateTimeKind.Unspecified), null, "nove1398@yahoo.com", "evon", "XohImNooBHFR0OVvjcYpJ3NgPQ1qq73WKhHvch0VQtg=", true, "franklin", "13", null, "CIErpHFa53Bkuf2HlqeMXOB9qhAe5T8qQJPKtuMsA1FrX570WW7dObzArb5y4vKCVms=", 0, null },
+                    { 15L, null, "gPOOLderZ", "Hi, i'm new", "18762782795", new DateTime(2020, 8, 1, 6, 19, 57, 843, DateTimeKind.Utc).AddTicks(5603), new DateTime(1989, 11, 28, 0, 0, 0, 0, DateTimeKind.Unspecified), null, "nove1398@yahoo.com", "evon", "XohImNooBHFR0OVvjcYpJ3NgPQ1qq73WKhHvch0VQtg=", true, "franklin", "15", null, "CIErpHFa53Bkuf2HlqeMXOB9qhAe5T8qQJPKtuMsA1FrX570WW7dObzArb5y4vKCVms=", 0, null },
+                    { 17L, null, "gPOOLderZ", "Hi, i'm new", "18762782795", new DateTime(2020, 8, 1, 6, 19, 57, 843, DateTimeKind.Utc).AddTicks(5603), new DateTime(1989, 11, 28, 0, 0, 0, 0, DateTimeKind.Unspecified), null, "nove1398@yahoo.com", "evon", "XohImNooBHFR0OVvjcYpJ3NgPQ1qq73WKhHvch0VQtg=", true, "franklin", "17", null, "CIErpHFa53Bkuf2HlqeMXOB9qhAe5T8qQJPKtuMsA1FrX570WW7dObzArb5y4vKCVms=", 0, null },
+                    { 19L, null, "gPOOLderZ", "Hi, i'm new", "18762782795", new DateTime(2020, 8, 1, 6, 19, 57, 843, DateTimeKind.Utc).AddTicks(5606), new DateTime(1989, 11, 28, 0, 0, 0, 0, DateTimeKind.Unspecified), null, "nove1398@yahoo.com", "evon", "XohImNooBHFR0OVvjcYpJ3NgPQ1qq73WKhHvch0VQtg=", true, "franklin", "19", null, "CIErpHFa53Bkuf2HlqeMXOB9qhAe5T8qQJPKtuMsA1FrX570WW7dObzArb5y4vKCVms=", 0, null },
+                    { 11L, null, "gPOOLderZ", "Hi, i'm new", "18762782795", new DateTime(2020, 8, 1, 6, 19, 57, 843, DateTimeKind.Utc).AddTicks(5597), new DateTime(1989, 11, 28, 0, 0, 0, 0, DateTimeKind.Unspecified), null, "nove1398@yahoo.com", "evon", "XohImNooBHFR0OVvjcYpJ3NgPQ1qq73WKhHvch0VQtg=", true, "franklin", "11", null, "CIErpHFa53Bkuf2HlqeMXOB9qhAe5T8qQJPKtuMsA1FrX570WW7dObzArb5y4vKCVms=", 0, null }
+                });
+
+            migrationBuilder.InsertData(
                 table: "Parishes",
                 columns: new[] { "ParishId", "Name" },
                 values: new object[,]
                 {
                     { 14, "St. Catherine" },
+                    { 9, "St. Elizabeth" },
                     { 13, "Hanover" },
                     { 12, "St. James" },
                     { 11, "Westmoreland" },
                     { 10, "Trelawny" },
-                    { 9, "St. Elizabeth" },
                     { 8, "Manchester" },
+                    { 2, "St. Andrew" },
                     { 6, "Clarendon" },
                     { 5, "St. Mary" },
                     { 4, "St. Thomas" },
                     { 3, "Portland" },
-                    { 2, "St. Andrew" },
                     { 1, "Kingston" },
                     { 7, "St. Ann" }
                 });
@@ -630,11 +683,6 @@ namespace DeliveryService.Server.Migrations
                 table: "Address",
                 columns: new[] { "AddressId", "AddressLine1", "AddressLine2", "Country", "ParishId", "ZipCode" },
                 values: new object[] { 1L, "merrivale apartments", "13 merrivale close", "Jamaica", 1, 876 });
-
-            migrationBuilder.InsertData(
-                table: "AppUsers",
-                columns: new[] { "AppUserId", "AddressId", "BetaCode", "Biography", "Contact", "CreatedAt", "DateOfBirth", "DeletedAt", "Email", "FirstName", "HashedPassword", "IsActive", "LastName", "Nickname", "Photo", "Salt", "Sex", "UpdatedAt" },
-                values: new object[] { 1L, null, "gPOOLderZ", "Hi, i'm new", "18762782795", new DateTime(2020, 7, 27, 23, 4, 14, 157, DateTimeKind.Local).AddTicks(3636), new DateTime(1989, 11, 28, 0, 0, 0, 0, DateTimeKind.Unspecified), null, "nove1398@yahoo.com", "evon", "XohImNooBHFR0OVvjcYpJ3NgPQ1qq73WKhHvch0VQtg=", true, "franklin", "nove", null, "FUe6qfF48eRvxG6T5rctOVS5Av1nMJXBBQ2NzmenVfm5xIZD/e3QuPklALdTkw8ww/E=", 0, null });
 
             migrationBuilder.InsertData(
                 table: "AppUserRoles",
@@ -665,6 +713,16 @@ namespace DeliveryService.Server.Migrations
                 name: "IX_AppUserRoles_AppUserId",
                 table: "AppUserRoles",
                 column: "AppUserId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_AppUsers_AddressId",
+                table: "AppUsers",
+                column: "AddressId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_AppUserStores_StoreId",
+                table: "AppUserStores",
+                column: "StoreId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Audits_AppUserId1",
@@ -736,13 +794,6 @@ namespace DeliveryService.Server.Migrations
                 column: "AddressId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Stores_AppUserId",
-                table: "Stores",
-                column: "AppUserId",
-                unique: true,
-                filter: "[AppUserId] IS NOT NULL");
-
-            migrationBuilder.CreateIndex(
                 name: "IX_Stores_ServiceTypeId",
                 table: "Stores",
                 column: "ServiceTypeId");
@@ -761,6 +812,9 @@ namespace DeliveryService.Server.Migrations
 
             migrationBuilder.DropTable(
                 name: "AppUserRoles");
+
+            migrationBuilder.DropTable(
+                name: "AppUserStores");
 
             migrationBuilder.DropTable(
                 name: "Audits");
@@ -811,19 +865,19 @@ namespace DeliveryService.Server.Migrations
                 name: "MenuItems");
 
             migrationBuilder.DropTable(
+                name: "AppUsers");
+
+            migrationBuilder.DropTable(
                 name: "OrderStatuses");
 
             migrationBuilder.DropTable(
                 name: "Stores");
 
             migrationBuilder.DropTable(
-                name: "AppUsers");
+                name: "Address");
 
             migrationBuilder.DropTable(
                 name: "ServiceTypes");
-
-            migrationBuilder.DropTable(
-                name: "Address");
 
             migrationBuilder.DropTable(
                 name: "Parishes");

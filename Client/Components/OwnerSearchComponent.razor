@@ -1,0 +1,91 @@
+﻿@inject HttpHandler Http
+
+<div class="onwer-container w-100 p-2 col-sm-12">
+    <div class="w-100">
+        <EditForm Model="search" method="post" class="form-inline" OnValidSubmit="SearchUsers">
+            <div class="form-group">
+                <InputText @bind-Value="search.searchString" class="form-control"></InputText>
+                <ValidationMessage For="@(() => search.searchString)" />
+            </div>
+            <button class="btn btn-primary d-inline-block" >Search</button>
+        </EditForm>
+    </div>
+    <!--Results window-->
+    <div class="w-100 overflow-auto p-2">
+        @if (gettingResults)
+        {
+            <p class="text-center">Loading results...</p>
+        }
+        else
+        {
+            @if (nonOwnersList == null || nonOwnersList.Count < 1)
+            {
+                <div><p class="text-center">Try searching to load some results</p></div>
+            }
+            else
+            {
+                foreach(var user in nonOwnersList)
+                {
+                    if (usedOwners.Contains(user))
+                    {
+                        continue;
+                    }
+                    <div class="d-inline-block ">
+                        <a href="#" 
+                           title="Click to add"
+                           @onclick="@(() => { OnClickCallback.InvokeAsync(user);  })" 
+                           @onclick:preventDefault 
+                           class="badge badge-info p-1 mr-1 text-white text-capitalize">@user.GetFullName()</a> 
+                    </div>
+
+                }
+            }
+        }
+
+    </div>
+</div>
+
+
+@code {       
+    private List<UserViewModel> nonOwnersList;
+    private HashSet<UserViewModel> usedOwners = new HashSet<UserViewModel>();
+    private SearchTarget search = new SearchTarget();
+    private bool gettingResults = false;
+
+    [Parameter]
+    public EventCallback<UserViewModel> OnClickCallback { get; set; }
+
+
+    private async Task SearchUsers()
+    {
+        if (string.IsNullOrEmpty(search.searchString))
+        {
+            return;
+        }
+        try
+        {
+            gettingResults = true;
+            nonOwnersList = null;
+            var nonOwners = await Http.GetJsonAsync<ResponseModel<List<UserViewModel>>>($"/api/appusers/nonowners/{search.searchString}");
+            if(nonOwners.IsSuccess)
+                nonOwnersList = nonOwners.Data;
+            gettingResults = false;
+        }catch(Exception ex)
+        {
+            Console.WriteLine(ex.Message);
+        }
+
+    }
+
+    private void AssignOwner(UserViewModel element)
+    {
+
+        usedOwners.Add(element);
+    }
+
+    private void RemoveAssignedOwners(UserViewModel user)
+    {
+
+    }
+
+}

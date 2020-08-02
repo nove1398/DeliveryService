@@ -56,6 +56,15 @@ namespace DeliveryService.Server.Controllers
             var data = await _userSrvice.GetUsers();
             return Ok(new ResponseModel<List<AppUser>>() { Data = data, Message = $"Retrieved {data.Count} result(s)", IsSuccess = true });
         }
+
+        //GET: api/appusers/owners/james
+        [HttpGet("appusers/nonowners/{needle}")]
+        public async Task<IActionResult> AllOwnerUsers(string needle)
+        {
+            // Add bool check for owners vs non owners
+            var data = await _userSrvice.UsersNotOwners(needle);
+            return Ok(new ResponseModel<List<UserViewModel>>() { Data = data, Message = $"Retrieved {data.Count} result(s)", IsSuccess = true });
+        }
         #endregion
 
         #region Stores
@@ -89,8 +98,22 @@ namespace DeliveryService.Server.Controllers
         {
             var response = await _storeService.FindStore(id);
             if(response != null)
-                return Ok(new ResponseModel<Store> { Data = response, IsSuccess = true, Message = "" });
-            return NotFound(new ResponseModel<Store> { Data = null, IsSuccess = false, Message = "" });
+            {
+                return Ok(new ResponseModel<StoreViewModel> { Data = response, IsSuccess = true, Message = "" });
+            }
+            return NotFound(new ResponseModel<StoreViewModel> { Data = null, IsSuccess = false, Message = "" });
+        }
+
+        //PUT: api/stores
+        [HttpPut("stores")]
+        public async Task<IActionResult> UpdateStoreAsync([FromBody]StoreViewModel model)
+        {
+            if (!ModelState.IsValid)
+                return Ok(new ResponseModel<StoreViewModel> { Data = null, IsSuccess = false, Message = "Errors found" });
+
+            var response = await _storeService.UpdateStore(model);
+            var updatedStore = await _storeService.FindStore(model.Id);
+            return Ok(new ResponseModel<StoreViewModel> { Data = updatedStore, IsSuccess = true, Message = "Updated successfully" });
         }
         #endregion
 

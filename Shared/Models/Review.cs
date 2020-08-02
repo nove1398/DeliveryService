@@ -12,6 +12,8 @@ namespace DeliveryService.Shared.Models
 
         public DateTime CreatedAt { get; set; }
 
+        public DateTime? DeletedAt { get; set; }
+
         public string Details { get; set; }
 
         public int Rating { get; set; }

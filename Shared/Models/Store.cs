@@ -25,6 +25,8 @@ namespace DeliveryService.Shared.Models
 
         public DateTime? UpdatedAt { get; set; }
 
+        public DateTime? DeletedAt { get; set; }
+
         public long? AddressId { get; set; }
         [ValidateComplexType]
         public Address Address { get; set; }

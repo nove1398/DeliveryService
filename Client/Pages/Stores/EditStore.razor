@@ -12,17 +12,65 @@
     return;
 }
 
+
 <EditForm Model="store" OnValidSubmit="UpdateStore">
     <ObjectGraphDataAnnotationsValidator />
     @if (!string.IsNullOrEmpty(statusMessage))
     {
-        <AlertComponent text="statusMessage" />
+        <AlertComponent text="@statusMessage" />
     }
     <div class="form-group">
-        <label>Name</label>
-        <InputText class="form-control" @bind-Value="store.Name" />
-        <ValidationMessage For="@(() => store.Name)" />
+        <label>Store Name</label>
+        <InputText class="form-control" @bind-Value="store.StoreName" />
+        <ValidationMessage For="@(() => store.StoreName)" />
     </div>
+    <div class="form-group border p-2 w-100">
+        <!--List of possible store owners-->
+        <label>Currnt Store Owners</label>
+        <div class="col-sm-12">
+            @if (store.CurrentOwners.Count < 1)
+            {
+                <div class="text-center col-sm-12 p-2">
+                    <div class="alert alert-warning">No owners assigned to this store</div>
+                </div>
+            }
+            @foreach (var owner in store.CurrentOwners)
+            {
+                <div class="badge badge-primary d-inline-block rounded">
+                    <p class="d-inline-block text-capitalize m-0">
+                        @owner.Name
+                        <a href="#" 
+                            @onclick="@(() => { RemoveOwner(owner); })"
+                           @onclick:preventDefault >
+                            <span class="oi oi-x text-white" title="Remove Owner"></span>
+                        </a>
+                    </p>
+                </div>
+            }
+        </div>
+
+        <div>
+            <label>Assign New Owners</label>
+            <OwnerSearchComponent OnClickCallback="AddTempOwner" />
+        </div>
+        
+        <div>
+            <label>Owners That will be Added</label>
+            <div class="col-sm-12 p-2">
+                @foreach (var owner in store.TempOwners)
+                {
+                    <div class="d-inline-block ">
+                        <a href="#"
+                           title="Click to remove"
+                           @onclick="@(() => { RemoveTempOwner(owner); })"
+                           @onclick:preventDefault
+                           class="badge badge-secondary p-1 mr-1 text-white text-capitalize">@owner.Name</a>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+
     <div class="form-group">
         <label>Contact</label>
         <InputText class="form-control" @bind-Value="store.Contact" />
@@ -40,14 +88,14 @@
     </div>
     <div class="form-group">
         <label>Service Type Offered</label>
-        <InputSelectNumber @bind-Value="store.ServiceTypeId" class="form-control">
+        <InputSelectNumber @bind-Value="store.ServiceType.ServiceTypeId" class="form-control">
             <option selected>Select Service Type</option>
             @foreach (var service in serviceTypes)
             {
                 <option value="@service.ServiceTypeId">@service.Name</option>
             }
         </InputSelectNumber>
-        <ValidationMessage For="@(() => store.ServiceTypeId)" />
+        <ValidationMessage For="@(() => store.ServiceType.ServiceTypeId)" />
     </div>
     <div class="form-group">
         <label>Address Line1</label>
@@ -81,17 +129,17 @@
         <ValidationMessage For="@(() => store.Address.ZipCode)" />
     </div>
     <div>
-        <button class="btn btn-primary">Submit</button>
+        <button class="btn btn-primary" @onclick="@(() => NavMan.NavigateTo("/stores"))" @onclick:preventDefault>Back</button>
+        <button class="btn btn-primary">Save</button>
     </div>
 </EditForm>
 
 @code {
-    Store store = new Store();
+    StoreViewModel store = new StoreViewModel();
     private string statusMessage;
     private bool isLoading = false;
     private List<Parish> parishList;
     private List<ServiceType> serviceTypes;
-
 
     [Parameter]
     public int Id { get; set; }
@@ -99,10 +147,12 @@
     protected override async Task OnInitializedAsync()
     {
         isLoading = true;
-        var storeResponse = await HTTP.GetJsonAsync<ResponseModel<Store>>($"/api/stores/{Id}");
+
+        var storeResponse = await HTTP.GetJsonAsync<ResponseModel<StoreViewModel>>($"/api/stores/{Id}");
         if (storeResponse.IsSuccess)
         {
             store = storeResponse.Data;
+            statusMessage = storeResponse.Message;
         }
         else
         {
@@ -122,8 +172,33 @@
         isLoading = false;
     }
 
-    async Task UpdateStore()
+    private void AddTempOwner(UserViewModel user)
     {
-
+        store.TempOwners.Add(new Owner { Id = user.UserId, Name = user.GetFullName() });
     }
+
+    private void RemoveTempOwner(Owner key)
+    {
+        store.TempOwners.Remove(key);
+    }
+
+    private void RemoveOwner(Owner key)
+    {
+        store.CurrentOwners.Remove(key);
+    }
+
+    private async Task UpdateStore()
+    {
+        if (isLoading)
+            return;
+
+        isLoading = true;
+        var result = await HTTP.PutAsync<ResponseModel<StoreViewModel>>("/api/stores",store);
+        if (result.IsSuccess)
+        {
+            statusMessage = result.Message;
+        }
+        isLoading = false;
+    }
+
 }

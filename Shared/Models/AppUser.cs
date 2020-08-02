@@ -48,8 +48,6 @@ namespace DeliveryService.Shared.Models
 
         public virtual Rider Rider { get; set; }
 
-        public Store Store { get; set; }
-
         public long? AddressId { get; set; }
         public Address Address { get; set; }
 

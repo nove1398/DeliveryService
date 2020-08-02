@@ -165,7 +165,9 @@ namespace DeliveryService.Server.Migrations
             modelBuilder.Entity("DeliveryService.Shared.Models.AppUser", b =>
                 {
                     b.Property<long>("AppUserId")
-                        .HasColumnType("bigint");
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
                     b.Property<long?>("AddressId")
                         .HasColumnType("bigint");
@@ -218,15 +220,12 @@ namespace DeliveryService.Server.Migrations
                     b.Property<int>("Sex")
                         .HasColumnType("int");
 
-                    b.Property<long?>("StoreId")
-                        .HasColumnType("bigint");
-
                     b.Property<DateTime?>("UpdatedAt")
                         .HasColumnType("datetime2");
 
                     b.HasKey("AppUserId");
 
-                    b.HasIndex("StoreId");
+                    b.HasIndex("AddressId");
 
                     b.ToTable("AppUsers");
 
@@ -237,15 +236,423 @@ namespace DeliveryService.Server.Migrations
                             BetaCode = "gPOOLderZ",
                             Biography = "Hi, i'm new",
                             Contact = "18762782795",
-                            CreatedAt = new DateTime(2020, 7, 27, 23, 22, 57, 728, DateTimeKind.Local).AddTicks(6474),
+                            CreatedAt = new DateTime(2020, 8, 1, 6, 19, 57, 843, DateTimeKind.Utc).AddTicks(519),
                             DateOfBirth = new DateTime(1989, 11, 28, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Email = "nove1398@yahoo.com",
                             FirstName = "evon",
                             HashedPassword = "XohImNooBHFR0OVvjcYpJ3NgPQ1qq73WKhHvch0VQtg=",
                             IsActive = true,
                             LastName = "franklin",
-                            Nickname = "nove",
-                            Salt = "DZhZnQklYN9yIIlGezgVKeCyCxoptikBPHuEvvcKnoqPh0T4zkJTfufP66wDLdBtlUY=",
+                            Nickname = "1",
+                            Salt = "CIErpHFa53Bkuf2HlqeMXOB9qhAe5T8qQJPKtuMsA1FrX570WW7dObzArb5y4vKCVms=",
+                            Sex = 0
+                        },
+                        new
+                        {
+                            AppUserId = 3L,
+                            BetaCode = "gPOOLderZ",
+                            Biography = "Hi, i'm new",
+                            Contact = "18762782795",
+                            CreatedAt = new DateTime(2020, 8, 1, 6, 19, 57, 843, DateTimeKind.Utc).AddTicks(5507),
+                            DateOfBirth = new DateTime(1989, 11, 28, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            Email = "nove1398@yahoo.com",
+                            FirstName = "evon",
+                            HashedPassword = "XohImNooBHFR0OVvjcYpJ3NgPQ1qq73WKhHvch0VQtg=",
+                            IsActive = true,
+                            LastName = "franklin",
+                            Nickname = "3",
+                            Salt = "CIErpHFa53Bkuf2HlqeMXOB9qhAe5T8qQJPKtuMsA1FrX570WW7dObzArb5y4vKCVms=",
+                            Sex = 0
+                        },
+                        new
+                        {
+                            AppUserId = 5L,
+                            BetaCode = "gPOOLderZ",
+                            Biography = "Hi, i'm new",
+                            Contact = "18762782795",
+                            CreatedAt = new DateTime(2020, 8, 1, 6, 19, 57, 843, DateTimeKind.Utc).AddTicks(5588),
+                            DateOfBirth = new DateTime(1989, 11, 28, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            Email = "nove1398@yahoo.com",
+                            FirstName = "evon",
+                            HashedPassword = "XohImNooBHFR0OVvjcYpJ3NgPQ1qq73WKhHvch0VQtg=",
+                            IsActive = true,
+                            LastName = "franklin",
+                            Nickname = "5",
+                            Salt = "CIErpHFa53Bkuf2HlqeMXOB9qhAe5T8qQJPKtuMsA1FrX570WW7dObzArb5y4vKCVms=",
+                            Sex = 0
+                        },
+                        new
+                        {
+                            AppUserId = 7L,
+                            BetaCode = "gPOOLderZ",
+                            Biography = "Hi, i'm new",
+                            Contact = "18762782795",
+                            CreatedAt = new DateTime(2020, 8, 1, 6, 19, 57, 843, DateTimeKind.Utc).AddTicks(5591),
+                            DateOfBirth = new DateTime(1989, 11, 28, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            Email = "nove1398@yahoo.com",
+                            FirstName = "evon",
+                            HashedPassword = "XohImNooBHFR0OVvjcYpJ3NgPQ1qq73WKhHvch0VQtg=",
+                            IsActive = true,
+                            LastName = "franklin",
+                            Nickname = "7",
+                            Salt = "CIErpHFa53Bkuf2HlqeMXOB9qhAe5T8qQJPKtuMsA1FrX570WW7dObzArb5y4vKCVms=",
+                            Sex = 0
+                        },
+                        new
+                        {
+                            AppUserId = 9L,
+                            BetaCode = "gPOOLderZ",
+                            Biography = "Hi, i'm new",
+                            Contact = "18762782795",
+                            CreatedAt = new DateTime(2020, 8, 1, 6, 19, 57, 843, DateTimeKind.Utc).AddTicks(5594),
+                            DateOfBirth = new DateTime(1989, 11, 28, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            Email = "nove1398@yahoo.com",
+                            FirstName = "evon",
+                            HashedPassword = "XohImNooBHFR0OVvjcYpJ3NgPQ1qq73WKhHvch0VQtg=",
+                            IsActive = true,
+                            LastName = "franklin",
+                            Nickname = "9",
+                            Salt = "CIErpHFa53Bkuf2HlqeMXOB9qhAe5T8qQJPKtuMsA1FrX570WW7dObzArb5y4vKCVms=",
+                            Sex = 0
+                        },
+                        new
+                        {
+                            AppUserId = 11L,
+                            BetaCode = "gPOOLderZ",
+                            Biography = "Hi, i'm new",
+                            Contact = "18762782795",
+                            CreatedAt = new DateTime(2020, 8, 1, 6, 19, 57, 843, DateTimeKind.Utc).AddTicks(5597),
+                            DateOfBirth = new DateTime(1989, 11, 28, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            Email = "nove1398@yahoo.com",
+                            FirstName = "evon",
+                            HashedPassword = "XohImNooBHFR0OVvjcYpJ3NgPQ1qq73WKhHvch0VQtg=",
+                            IsActive = true,
+                            LastName = "franklin",
+                            Nickname = "11",
+                            Salt = "CIErpHFa53Bkuf2HlqeMXOB9qhAe5T8qQJPKtuMsA1FrX570WW7dObzArb5y4vKCVms=",
+                            Sex = 0
+                        },
+                        new
+                        {
+                            AppUserId = 13L,
+                            BetaCode = "gPOOLderZ",
+                            Biography = "Hi, i'm new",
+                            Contact = "18762782795",
+                            CreatedAt = new DateTime(2020, 8, 1, 6, 19, 57, 843, DateTimeKind.Utc).AddTicks(5600),
+                            DateOfBirth = new DateTime(1989, 11, 28, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            Email = "nove1398@yahoo.com",
+                            FirstName = "evon",
+                            HashedPassword = "XohImNooBHFR0OVvjcYpJ3NgPQ1qq73WKhHvch0VQtg=",
+                            IsActive = true,
+                            LastName = "franklin",
+                            Nickname = "13",
+                            Salt = "CIErpHFa53Bkuf2HlqeMXOB9qhAe5T8qQJPKtuMsA1FrX570WW7dObzArb5y4vKCVms=",
+                            Sex = 0
+                        },
+                        new
+                        {
+                            AppUserId = 15L,
+                            BetaCode = "gPOOLderZ",
+                            Biography = "Hi, i'm new",
+                            Contact = "18762782795",
+                            CreatedAt = new DateTime(2020, 8, 1, 6, 19, 57, 843, DateTimeKind.Utc).AddTicks(5603),
+                            DateOfBirth = new DateTime(1989, 11, 28, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            Email = "nove1398@yahoo.com",
+                            FirstName = "evon",
+                            HashedPassword = "XohImNooBHFR0OVvjcYpJ3NgPQ1qq73WKhHvch0VQtg=",
+                            IsActive = true,
+                            LastName = "franklin",
+                            Nickname = "15",
+                            Salt = "CIErpHFa53Bkuf2HlqeMXOB9qhAe5T8qQJPKtuMsA1FrX570WW7dObzArb5y4vKCVms=",
+                            Sex = 0
+                        },
+                        new
+                        {
+                            AppUserId = 17L,
+                            BetaCode = "gPOOLderZ",
+                            Biography = "Hi, i'm new",
+                            Contact = "18762782795",
+                            CreatedAt = new DateTime(2020, 8, 1, 6, 19, 57, 843, DateTimeKind.Utc).AddTicks(5603),
+                            DateOfBirth = new DateTime(1989, 11, 28, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            Email = "nove1398@yahoo.com",
+                            FirstName = "evon",
+                            HashedPassword = "XohImNooBHFR0OVvjcYpJ3NgPQ1qq73WKhHvch0VQtg=",
+                            IsActive = true,
+                            LastName = "franklin",
+                            Nickname = "17",
+                            Salt = "CIErpHFa53Bkuf2HlqeMXOB9qhAe5T8qQJPKtuMsA1FrX570WW7dObzArb5y4vKCVms=",
+                            Sex = 0
+                        },
+                        new
+                        {
+                            AppUserId = 19L,
+                            BetaCode = "gPOOLderZ",
+                            Biography = "Hi, i'm new",
+                            Contact = "18762782795",
+                            CreatedAt = new DateTime(2020, 8, 1, 6, 19, 57, 843, DateTimeKind.Utc).AddTicks(5606),
+                            DateOfBirth = new DateTime(1989, 11, 28, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            Email = "nove1398@yahoo.com",
+                            FirstName = "evon",
+                            HashedPassword = "XohImNooBHFR0OVvjcYpJ3NgPQ1qq73WKhHvch0VQtg=",
+                            IsActive = true,
+                            LastName = "franklin",
+                            Nickname = "19",
+                            Salt = "CIErpHFa53Bkuf2HlqeMXOB9qhAe5T8qQJPKtuMsA1FrX570WW7dObzArb5y4vKCVms=",
+                            Sex = 0
+                        },
+                        new
+                        {
+                            AppUserId = 21L,
+                            BetaCode = "gPOOLderZ",
+                            Biography = "Hi, i'm new",
+                            Contact = "18762782795",
+                            CreatedAt = new DateTime(2020, 8, 1, 6, 19, 57, 843, DateTimeKind.Utc).AddTicks(5609),
+                            DateOfBirth = new DateTime(1989, 11, 28, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            Email = "nove1398@yahoo.com",
+                            FirstName = "evon",
+                            HashedPassword = "XohImNooBHFR0OVvjcYpJ3NgPQ1qq73WKhHvch0VQtg=",
+                            IsActive = true,
+                            LastName = "franklin",
+                            Nickname = "21",
+                            Salt = "CIErpHFa53Bkuf2HlqeMXOB9qhAe5T8qQJPKtuMsA1FrX570WW7dObzArb5y4vKCVms=",
+                            Sex = 0
+                        },
+                        new
+                        {
+                            AppUserId = 23L,
+                            BetaCode = "gPOOLderZ",
+                            Biography = "Hi, i'm new",
+                            Contact = "18762782795",
+                            CreatedAt = new DateTime(2020, 8, 1, 6, 19, 57, 843, DateTimeKind.Utc).AddTicks(5609),
+                            DateOfBirth = new DateTime(1989, 11, 28, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            Email = "nove1398@yahoo.com",
+                            FirstName = "evon",
+                            HashedPassword = "XohImNooBHFR0OVvjcYpJ3NgPQ1qq73WKhHvch0VQtg=",
+                            IsActive = true,
+                            LastName = "franklin",
+                            Nickname = "23",
+                            Salt = "CIErpHFa53Bkuf2HlqeMXOB9qhAe5T8qQJPKtuMsA1FrX570WW7dObzArb5y4vKCVms=",
+                            Sex = 0
+                        },
+                        new
+                        {
+                            AppUserId = 25L,
+                            BetaCode = "gPOOLderZ",
+                            Biography = "Hi, i'm new",
+                            Contact = "18762782795",
+                            CreatedAt = new DateTime(2020, 8, 1, 6, 19, 57, 843, DateTimeKind.Utc).AddTicks(5612),
+                            DateOfBirth = new DateTime(1989, 11, 28, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            Email = "nove1398@yahoo.com",
+                            FirstName = "evon",
+                            HashedPassword = "XohImNooBHFR0OVvjcYpJ3NgPQ1qq73WKhHvch0VQtg=",
+                            IsActive = true,
+                            LastName = "franklin",
+                            Nickname = "25",
+                            Salt = "CIErpHFa53Bkuf2HlqeMXOB9qhAe5T8qQJPKtuMsA1FrX570WW7dObzArb5y4vKCVms=",
+                            Sex = 0
+                        },
+                        new
+                        {
+                            AppUserId = 27L,
+                            BetaCode = "gPOOLderZ",
+                            Biography = "Hi, i'm new",
+                            Contact = "18762782795",
+                            CreatedAt = new DateTime(2020, 8, 1, 6, 19, 57, 843, DateTimeKind.Utc).AddTicks(5612),
+                            DateOfBirth = new DateTime(1989, 11, 28, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            Email = "nove1398@yahoo.com",
+                            FirstName = "evon",
+                            HashedPassword = "XohImNooBHFR0OVvjcYpJ3NgPQ1qq73WKhHvch0VQtg=",
+                            IsActive = true,
+                            LastName = "franklin",
+                            Nickname = "27",
+                            Salt = "CIErpHFa53Bkuf2HlqeMXOB9qhAe5T8qQJPKtuMsA1FrX570WW7dObzArb5y4vKCVms=",
+                            Sex = 0
+                        },
+                        new
+                        {
+                            AppUserId = 29L,
+                            BetaCode = "gPOOLderZ",
+                            Biography = "Hi, i'm new",
+                            Contact = "18762782795",
+                            CreatedAt = new DateTime(2020, 8, 1, 6, 19, 57, 843, DateTimeKind.Utc).AddTicks(5615),
+                            DateOfBirth = new DateTime(1989, 11, 28, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            Email = "nove1398@yahoo.com",
+                            FirstName = "evon",
+                            HashedPassword = "XohImNooBHFR0OVvjcYpJ3NgPQ1qq73WKhHvch0VQtg=",
+                            IsActive = true,
+                            LastName = "franklin",
+                            Nickname = "29",
+                            Salt = "CIErpHFa53Bkuf2HlqeMXOB9qhAe5T8qQJPKtuMsA1FrX570WW7dObzArb5y4vKCVms=",
+                            Sex = 0
+                        },
+                        new
+                        {
+                            AppUserId = 31L,
+                            BetaCode = "gPOOLderZ",
+                            Biography = "Hi, i'm new",
+                            Contact = "18762782795",
+                            CreatedAt = new DateTime(2020, 8, 1, 6, 19, 57, 843, DateTimeKind.Utc).AddTicks(5615),
+                            DateOfBirth = new DateTime(1989, 11, 28, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            Email = "nove1398@yahoo.com",
+                            FirstName = "evon",
+                            HashedPassword = "XohImNooBHFR0OVvjcYpJ3NgPQ1qq73WKhHvch0VQtg=",
+                            IsActive = true,
+                            LastName = "franklin",
+                            Nickname = "31",
+                            Salt = "CIErpHFa53Bkuf2HlqeMXOB9qhAe5T8qQJPKtuMsA1FrX570WW7dObzArb5y4vKCVms=",
+                            Sex = 0
+                        },
+                        new
+                        {
+                            AppUserId = 33L,
+                            BetaCode = "gPOOLderZ",
+                            Biography = "Hi, i'm new",
+                            Contact = "18762782795",
+                            CreatedAt = new DateTime(2020, 8, 1, 6, 19, 57, 843, DateTimeKind.Utc).AddTicks(5618),
+                            DateOfBirth = new DateTime(1989, 11, 28, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            Email = "nove1398@yahoo.com",
+                            FirstName = "evon",
+                            HashedPassword = "XohImNooBHFR0OVvjcYpJ3NgPQ1qq73WKhHvch0VQtg=",
+                            IsActive = true,
+                            LastName = "franklin",
+                            Nickname = "33",
+                            Salt = "CIErpHFa53Bkuf2HlqeMXOB9qhAe5T8qQJPKtuMsA1FrX570WW7dObzArb5y4vKCVms=",
+                            Sex = 0
+                        },
+                        new
+                        {
+                            AppUserId = 35L,
+                            BetaCode = "gPOOLderZ",
+                            Biography = "Hi, i'm new",
+                            Contact = "18762782795",
+                            CreatedAt = new DateTime(2020, 8, 1, 6, 19, 57, 843, DateTimeKind.Utc).AddTicks(5621),
+                            DateOfBirth = new DateTime(1989, 11, 28, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            Email = "nove1398@yahoo.com",
+                            FirstName = "evon",
+                            HashedPassword = "XohImNooBHFR0OVvjcYpJ3NgPQ1qq73WKhHvch0VQtg=",
+                            IsActive = true,
+                            LastName = "franklin",
+                            Nickname = "35",
+                            Salt = "CIErpHFa53Bkuf2HlqeMXOB9qhAe5T8qQJPKtuMsA1FrX570WW7dObzArb5y4vKCVms=",
+                            Sex = 0
+                        },
+                        new
+                        {
+                            AppUserId = 37L,
+                            BetaCode = "gPOOLderZ",
+                            Biography = "Hi, i'm new",
+                            Contact = "18762782795",
+                            CreatedAt = new DateTime(2020, 8, 1, 6, 19, 57, 843, DateTimeKind.Utc).AddTicks(5621),
+                            DateOfBirth = new DateTime(1989, 11, 28, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            Email = "nove1398@yahoo.com",
+                            FirstName = "evon",
+                            HashedPassword = "XohImNooBHFR0OVvjcYpJ3NgPQ1qq73WKhHvch0VQtg=",
+                            IsActive = true,
+                            LastName = "franklin",
+                            Nickname = "37",
+                            Salt = "CIErpHFa53Bkuf2HlqeMXOB9qhAe5T8qQJPKtuMsA1FrX570WW7dObzArb5y4vKCVms=",
+                            Sex = 0
+                        },
+                        new
+                        {
+                            AppUserId = 39L,
+                            BetaCode = "gPOOLderZ",
+                            Biography = "Hi, i'm new",
+                            Contact = "18762782795",
+                            CreatedAt = new DateTime(2020, 8, 1, 6, 19, 57, 843, DateTimeKind.Utc).AddTicks(5624),
+                            DateOfBirth = new DateTime(1989, 11, 28, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            Email = "nove1398@yahoo.com",
+                            FirstName = "evon",
+                            HashedPassword = "XohImNooBHFR0OVvjcYpJ3NgPQ1qq73WKhHvch0VQtg=",
+                            IsActive = true,
+                            LastName = "franklin",
+                            Nickname = "39",
+                            Salt = "CIErpHFa53Bkuf2HlqeMXOB9qhAe5T8qQJPKtuMsA1FrX570WW7dObzArb5y4vKCVms=",
+                            Sex = 0
+                        },
+                        new
+                        {
+                            AppUserId = 41L,
+                            BetaCode = "gPOOLderZ",
+                            Biography = "Hi, i'm new",
+                            Contact = "18762782795",
+                            CreatedAt = new DateTime(2020, 8, 1, 6, 19, 57, 843, DateTimeKind.Utc).AddTicks(5624),
+                            DateOfBirth = new DateTime(1989, 11, 28, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            Email = "nove1398@yahoo.com",
+                            FirstName = "evon",
+                            HashedPassword = "XohImNooBHFR0OVvjcYpJ3NgPQ1qq73WKhHvch0VQtg=",
+                            IsActive = true,
+                            LastName = "franklin",
+                            Nickname = "41",
+                            Salt = "CIErpHFa53Bkuf2HlqeMXOB9qhAe5T8qQJPKtuMsA1FrX570WW7dObzArb5y4vKCVms=",
+                            Sex = 0
+                        },
+                        new
+                        {
+                            AppUserId = 43L,
+                            BetaCode = "gPOOLderZ",
+                            Biography = "Hi, i'm new",
+                            Contact = "18762782795",
+                            CreatedAt = new DateTime(2020, 8, 1, 6, 19, 57, 843, DateTimeKind.Utc).AddTicks(5624),
+                            DateOfBirth = new DateTime(1989, 11, 28, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            Email = "nove1398@yahoo.com",
+                            FirstName = "evon",
+                            HashedPassword = "XohImNooBHFR0OVvjcYpJ3NgPQ1qq73WKhHvch0VQtg=",
+                            IsActive = true,
+                            LastName = "franklin",
+                            Nickname = "43",
+                            Salt = "CIErpHFa53Bkuf2HlqeMXOB9qhAe5T8qQJPKtuMsA1FrX570WW7dObzArb5y4vKCVms=",
+                            Sex = 0
+                        },
+                        new
+                        {
+                            AppUserId = 45L,
+                            BetaCode = "gPOOLderZ",
+                            Biography = "Hi, i'm new",
+                            Contact = "18762782795",
+                            CreatedAt = new DateTime(2020, 8, 1, 6, 19, 57, 843, DateTimeKind.Utc).AddTicks(5627),
+                            DateOfBirth = new DateTime(1989, 11, 28, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            Email = "nove1398@yahoo.com",
+                            FirstName = "evon",
+                            HashedPassword = "XohImNooBHFR0OVvjcYpJ3NgPQ1qq73WKhHvch0VQtg=",
+                            IsActive = true,
+                            LastName = "franklin",
+                            Nickname = "45",
+                            Salt = "CIErpHFa53Bkuf2HlqeMXOB9qhAe5T8qQJPKtuMsA1FrX570WW7dObzArb5y4vKCVms=",
+                            Sex = 0
+                        },
+                        new
+                        {
+                            AppUserId = 47L,
+                            BetaCode = "gPOOLderZ",
+                            Biography = "Hi, i'm new",
+                            Contact = "18762782795",
+                            CreatedAt = new DateTime(2020, 8, 1, 6, 19, 57, 843, DateTimeKind.Utc).AddTicks(5627),
+                            DateOfBirth = new DateTime(1989, 11, 28, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            Email = "nove1398@yahoo.com",
+                            FirstName = "evon",
+                            HashedPassword = "XohImNooBHFR0OVvjcYpJ3NgPQ1qq73WKhHvch0VQtg=",
+                            IsActive = true,
+                            LastName = "franklin",
+                            Nickname = "47",
+                            Salt = "CIErpHFa53Bkuf2HlqeMXOB9qhAe5T8qQJPKtuMsA1FrX570WW7dObzArb5y4vKCVms=",
+                            Sex = 0
+                        },
+                        new
+                        {
+                            AppUserId = 49L,
+                            BetaCode = "gPOOLderZ",
+                            Biography = "Hi, i'm new",
+                            Contact = "18762782795",
+                            CreatedAt = new DateTime(2020, 8, 1, 6, 19, 57, 843, DateTimeKind.Utc).AddTicks(5630),
+                            DateOfBirth = new DateTime(1989, 11, 28, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            Email = "nove1398@yahoo.com",
+                            FirstName = "evon",
+                            HashedPassword = "XohImNooBHFR0OVvjcYpJ3NgPQ1qq73WKhHvch0VQtg=",
+                            IsActive = true,
+                            LastName = "franklin",
+                            Nickname = "49",
+                            Salt = "CIErpHFa53Bkuf2HlqeMXOB9qhAe5T8qQJPKtuMsA1FrX570WW7dObzArb5y4vKCVms=",
                             Sex = 0
                         });
                 });
@@ -430,6 +837,9 @@ namespace DeliveryService.Server.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("datetime2")
                         .HasDefaultValueSql("GETDATE()");
+
+                    b.Property<DateTime?>("DeletedAt")
+                        .HasColumnType("datetime2");
 
                     b.Property<string>("Description")
                         .HasColumnType("nvarchar(max)");
@@ -687,6 +1097,9 @@ namespace DeliveryService.Server.Migrations
                         .HasColumnType("datetime2")
                         .HasDefaultValueSql("GETDATE()");
 
+                    b.Property<DateTime?>("DeletedAt")
+                        .HasColumnType("datetime2");
+
                     b.Property<string>("Details")
                         .HasColumnType("nvarchar(600)")
                         .HasMaxLength(600);
@@ -828,6 +1241,9 @@ namespace DeliveryService.Server.Migrations
                         .HasColumnType("datetime2")
                         .HasDefaultValueSql("GETDATE()");
 
+                    b.Property<DateTime?>("DeletedAt")
+                        .HasColumnType("datetime2");
+
                     b.Property<decimal>("DeliveryFee")
                         .HasColumnType("decimal(10,2)");
 
@@ -882,13 +1298,8 @@ namespace DeliveryService.Server.Migrations
                 {
                     b.HasOne("DeliveryService.Shared.Models.Address", "Address")
                         .WithMany("AppUsers")
-                        .HasForeignKey("AppUserId")
-                        .OnDelete(DeleteBehavior.NoAction)
-                        .IsRequired();
-
-                    b.HasOne("DeliveryService.Shared.Models.Store", "Store")
-                        .WithMany()
-                        .HasForeignKey("StoreId");
+                        .HasForeignKey("AddressId")
+                        .OnDelete(DeleteBehavior.NoAction);
                 });
 
             modelBuilder.Entity("DeliveryService.Shared.Models.AppUserFavourite", b =>
